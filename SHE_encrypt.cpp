@@ -24,7 +24,7 @@ mpz_class get_prime(mp_bitcnt_t n)
     mpz_class ran;
     gmp_randclass r1(gmp_randinit_mt);
     //r1.seed((unsigned long)time(0));
-    r1.seed(123);
+    r1.seed(time(0));
     ran =r1.get_z_bits(n);
     while(!mpz_probab_prime_p(ran.get_mpz_t(),20)){
         ran++;
@@ -34,7 +34,7 @@ mpz_class get_prime(mp_bitcnt_t n)
 mpz_class get_rand(mp_bitcnt_t n)
 {
     gmp_randclass r1(gmp_randinit_mt);
-    r1.seed(123);
+    r1.seed(time(0));
     return r1.get_z_bits(n);
 }
 
@@ -116,6 +116,7 @@ void SHE_encry_pub(mpz_class plantext, mpz_class & enc ,const Publickey & pub)
     enc = (enc+ tmp) % pub.n;
 }
 
+#ifdef __SHE_encrypt__
 int main()
 {
     mpz_class a;
@@ -133,5 +134,4 @@ int main()
     myshe.SHE_dec(message,enc);
     cout << "decry test is " << message <<endl;
 }
-
-
+#endif
