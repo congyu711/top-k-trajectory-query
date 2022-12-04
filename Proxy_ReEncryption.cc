@@ -184,7 +184,7 @@ string Pre_Decryption(Integer privatekey,string cipher_txt){
     return m_dec;
 }
 
-#ifdef _Proxy_Re-Encryption_test_
+#ifdef __Proxy_ReEncryption_test__
 int main(){
     string plain_txt = "Proxy Re-Encryption";
     g.Initialize(prng,1024);

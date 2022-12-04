@@ -1,9 +1,12 @@
+CCC = g++
+GMP = -lgmpxx -lgmp
+CRYPTOPP = -lcryptopp
 
 hilbert: hilbertcurve.cc
-	g++ hilbertcurve.cc -o hilbertcurve -D __HILBERTCURVE_TEST__ -lgmpxx -lgmp
+	$(CCC) hilbertcurve.cc -o hilbertcurve -D __HILBERTCURVE_TEST__ $(GMP)
 
 SHE: SHE_encrypt.cpp
-	g++ SHE_encrypt.cpp -g  -lgmpxx -lgmp -o SHE_encrypt -D __SHE_encrypt__
+	$(CCC) SHE_encrypt.cpp -g  $(GMP) -o SHE_encrypt -D __SHE_encrypt__
 
-Proxy_Re-Encryption: Proxy_Re-Encryption.cc
-	g++ Proxy_Re-Encryption.cc -o Proxy_Re-Encryption -lcryptopp
+Proxy_ReEncryption: Proxy_ReEncryption.cc
+	$(CCC) Proxy_ReEncryption.cc -o Proxy_ReEncryption $(CRYPTOPP) -D __Proxy_ReEncryption_test__
