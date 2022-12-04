@@ -5,5 +5,5 @@ hilbert: hilbertcurve.cc
 SHE: SHE_encrypt.cpp
 	g++ SHE_encrypt.cpp -g  -lgmpxx -lgmp -o SHE_encrypt -D __SHE_encrypt__
 
-generate: generate_key.cc
-	g++ generate_key.cc -o generate_key -lcryptopp
+Proxy_Re-Encryption: Proxy_Re-Encryption.cc
+	g++ Proxy_Re-Encryption.cc -o Proxy_Re-Encryption -lcryptopp
