@@ -3,9 +3,9 @@
 #include <cryptopp/elgamal.h>
 #include <cryptopp/osrng.h>
 #include <cryptopp/hex.h>
-#include <cryptopp/hashfwd.h>
+// #include <cryptopp/hashfwd.h>
 #include <cryptopp/oids.h>
-#include <cryptopp/base64.h>
+// #include <cryptopp/base64.h>
 #include <iostream>
 #include <iomanip>
 using namespace CryptoPP;
