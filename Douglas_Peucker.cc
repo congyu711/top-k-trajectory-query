@@ -4,10 +4,6 @@
 #include <vector>
 using namespace std;
 
-const int Max_V = 1e5 + 5;//最大轨迹数据点数
-const double Max_dist = 2.0;//最大距离
-int traject_num = 0, traject_num_compress = 0;
-
 struct Point
 {
     double time;
@@ -15,33 +11,6 @@ struct Point
     double y;
     Point(double _time=0.0,double _x=0.0,double _y=0.0): time(_time),x(_x),y(_y){}
 };
-
-int string_to_int(string x)
-{
-    int num = 0;
-    for(int i =0;i<x.length();i++)
-    {
-        num = num*10 + x[i] - '0';
-    }
-    return num;
-}
-
-// double string_to_double(string x)
-// {
-//     double num = 0.0;
-//     int i = 0;
-//     for(i=0;i<x.length();i++){
-//         if(x[i]=='.')break;
-//         num = num*10 + x[i]-'0';
-//     }
-//     double xs = 0.0 ,ws = 1;
-//     for(i++;i<x.length();i++){
-//         xs = xs*10 +x[i]-'0';
-//         ws *= 10;
-//     }
-//     num += xs/ws;
-//     return num;
-// }
 
 class Douglas_Peucker
 {
