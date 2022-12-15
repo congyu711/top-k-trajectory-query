@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include <gmpxx.h>
 using namespace std;
 ///////////////////////////////////////////////////////////////////////////
 // https://en.wikipedia.org/wiki/Hilbert_curve

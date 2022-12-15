@@ -3,9 +3,7 @@
 #include <cryptopp/elgamal.h>
 #include <cryptopp/osrng.h>
 #include <cryptopp/hex.h>
-// #include <cryptopp/hashfwd.h>
 #include <cryptopp/oids.h>
-// #include <cryptopp/base64.h>
 #include <iostream>
 #include <iomanip>
 using namespace CryptoPP;
@@ -14,8 +12,6 @@ typedef DL_GroupParameters_EC<ECP> GroupParameters;
 typedef DL_GroupParameters_EC<ECP>::Element Element;
 
 AutoSeededRandomPool prng;
-DL_GroupParameters_ElGamal g;
-Integer m,gen;
 
 class ElGamal_keys
 {
@@ -33,7 +29,31 @@ public:
         E(_E),V(_V),s(_s){}
 };
 
-ElGamal_keys ElGamal_key_generation(){
+class Proxy_ReEncryption
+{
+private:
+    pair<Integer,Element> ECC_key_generation(Integer x);
+    DL_GroupParameters_ElGamal g;
+    Integer m,gen;
+public:
+    void ECIES_Encryption(string plain_txt,Element PublicKey,string& cipher_txt);
+    void ECIES_Decryption(string cipher_txt,Integer PrivateKey,string& plain_txt);
+    pair<vector<string>,Capsule> Pre_Enc(vector<string> plain_txt,Integer A_publickey);
+    pair<Integer,Integer> Pre_ReKeyGen(Integer A_privatekey,Integer B_publickey);
+    Capsule Pre_ReEncryption(Integer rk,Capsule cap);
+    Integer Pre_ReCreateKey(Integer B_privatekey,Integer B_publickey,Capsule cap,Integer X);
+    vector<string> Pre_Decryption(Integer privatekey,vector<string> cipher_txt);
+    ElGamal_keys ElGamal_key_generation();
+    void ElGamal_Encryption(string &plain_txt,string &cipher_txt,Integer publickey);
+    void ElGamal_Decryption(string &cipher_txt,string &decryption_txt,Integer privatekey);
+    Proxy_ReEncryption(){
+        g.Initialize(prng,150);
+        m = g.GetGroupOrder() + Integer::One();
+        gen = g.GetGenerator();
+    }
+};
+
+ElGamal_keys Proxy_ReEncryption::ElGamal_key_generation(){
     //private_key
     Integer x(prng,Integer::One(),g.GetMaxExponent());
 
@@ -46,8 +66,24 @@ ElGamal_keys ElGamal_key_generation(){
     return ElGamal_keys(x,y,order,generator);
 }
 
+void Proxy_ReEncryption::ElGamal_Encryption(string &plain_txt,string &cipher_txt,Integer publickey)
+{
+    ElGamal::Encryptor e0;
+    e0.AccessKey().AccessGroupParameters().Initialize(g);
+    e0.AccessKey().SetPublicElement(publickey);
+    StringSource ss(plain_txt,true,new PK_EncryptorFilter(prng,e0,new StringSink(cipher_txt)));
+}
+
+void Proxy_ReEncryption::ElGamal_Decryption(string &cipher_txt,string &decryption_txt,Integer privatekey)
+{
+    ElGamal::Decryptor d0;
+    d0.AccessKey().AccessGroupParameters().Initialize(g);
+    d0.AccessKey().SetPrivateExponent(privatekey);
+    StringSource ss(cipher_txt,true,new PK_DecryptorFilter(prng,d0,new StringSink(decryption_txt)));
+}
+
 //generate (public_key,private_Key)
-pair<Integer,Element> ECC_key_generation(Integer x){
+pair<Integer,Element> Proxy_ReEncryption::ECC_key_generation(Integer x){
     GroupParameters group;
     group.Initialize(ASN1::secp256r1());
 
@@ -77,17 +113,14 @@ void printstring(const string& str, ostream& out=cout)
     out<<"Cipher_txt: "<<o<<endl;
 }
 
-void ECIES_Encryption(string plain_txt,Element PublicKey,string& cipher_txt){
-    // ECIES<ECP>::Decryptor d0;
-    // d0.AccessKey().AccessGroupParameters().Initialize(ASN1::secp256r1());
-    // d0.AccessKey().SetPrivateExponent(Alice_privatekey);
+void Proxy_ReEncryption::ECIES_Encryption(string plain_txt,Element PublicKey,string& cipher_txt){
     ECIES<ECP>::Encryptor e0;
     e0.AccessKey().AccessGroupParameters().Initialize(ASN1::secp256r1());
     e0.AccessKey().SetPublicElement(PublicKey);
     StringSource ss(plain_txt,true,new PK_EncryptorFilter(prng,e0,new StringSink(cipher_txt)));
 }
 
-void ECIES_Decryption(string cipher_txt,Integer PrivateKey,string& plain_txt){
+void Proxy_ReEncryption::ECIES_Decryption(string cipher_txt,Integer PrivateKey,string& plain_txt){
     ECIES<ECP>::Decryptor d0;
     d0.AccessKey().AccessGroupParameters().Initialize(ASN1::secp256r1());
     d0.AccessKey().SetPrivateExponent(PrivateKey);
@@ -110,7 +143,7 @@ string Integer_to_string(Integer x){
     return y;
 }
 
-pair<string,Capsule> Pre_Enc(string plain_txt,Integer A_publickey){ 
+pair<vector<string>,Capsule> Proxy_ReEncryption::Pre_Enc(vector<string> plain_txt,Integer A_publickey){ 
     Integer min = Integer("1000000000");
     Integer max = Integer("100000000000000");
     SHA256 hash;
@@ -118,7 +151,6 @@ pair<string,Capsule> Pre_Enc(string plain_txt,Integer A_publickey){
     // random_num e,v
     Integer e = Integer(prng,min,max);
     Integer v = Integer(prng,min,max);
-
     Integer E = a_exp_b_mod_c(gen,e,m);
     Integer V = a_exp_b_mod_c(gen,v,m);
     string hash_str = Integer_to_string(E) + Integer_to_string(V);
@@ -127,12 +159,17 @@ pair<string,Capsule> Pre_Enc(string plain_txt,Integer A_publickey){
     Integer k = a_exp_b_mod_c(A_publickey,e+v,m);
     // cout <<"k1: "<<k <<endl;
     pair<Integer,Element> K = ECC_key_generation(k);
-    string m_Enc;
-    ECIES_Encryption(plain_txt,K.second,m_Enc);
+    vector<string> m_Enc;
+    for(string a:plain_txt)
+    {
+        string tmp;
+        ECIES_Encryption(a,K.second,tmp);
+        m_Enc.push_back(tmp);
+    }
     return make_pair(m_Enc,Capsule(E,V,s));
 }
 
-pair<Integer,Integer> Pre_ReKeyGen(Integer A_privatekey,Integer B_publickey){
+pair<Integer,Integer> Proxy_ReEncryption::Pre_ReKeyGen(Integer A_privatekey,Integer B_publickey){
     Integer x = Integer(prng,Integer("1000000000"),Integer("100000000000000"));
     SHA256 hash;
     Integer X = a_exp_b_mod_c(gen,x,m);
@@ -145,7 +182,7 @@ pair<Integer,Integer> Pre_ReKeyGen(Integer A_privatekey,Integer B_publickey){
     return make_pair(rk,X);
 }
 
-Capsule Pre_ReEncryption(Integer rk,Capsule cap){
+Capsule Proxy_ReEncryption::Pre_ReEncryption(Integer rk,Capsule cap){
     Integer a = a_exp_b_mod_c(gen,cap.s,m);
     SHA256 hash;
     string digest;
@@ -165,7 +202,7 @@ Capsule Pre_ReEncryption(Integer rk,Capsule cap){
     return Capsule(E1,V1,cap.s);
 }
 
-Integer Pre_ReCreateKey(Integer B_privatekey,Integer B_publickey,Capsule cap,Integer X){
+Integer Proxy_ReEncryption::Pre_ReCreateKey(Integer B_privatekey,Integer B_publickey,Capsule cap,Integer X){
     SHA256 hash;
     string digest;
     string hash_str = Integer_to_string(X)+Integer_to_string(B_publickey)+Integer_to_string(a_exp_b_mod_c(X,B_privatekey,m));
@@ -177,27 +214,18 @@ Integer Pre_ReCreateKey(Integer B_privatekey,Integer B_publickey,Capsule cap,Int
     return K.first;
 }
 
-string Pre_Decryption(Integer privatekey,string cipher_txt){
-    string m_dec;
-    ECIES_Decryption(cipher_txt,privatekey,m_dec);
-    cout << m_dec <<endl;
+vector<string> Proxy_ReEncryption::Pre_Decryption(Integer privatekey,vector<string> cipher_txt){
+    vector<string> m_dec;
+    for(string a:cipher_txt)
+    {
+        string tmp;
+        ECIES_Decryption(a,privatekey,tmp);
+        m_dec.push_back(tmp);
+    }
     return m_dec;
 }
 
 #ifdef __Proxy_ReEncryption_test__
 int main(){
-    string plain_txt = "Proxy Re-Encryption";
-    g.Initialize(prng,1024);
-    ElGamal_keys A_key = ElGamal_key_generation();
-    ElGamal_keys B_key = ElGamal_key_generation();
-    gen = A_key.generator;
-    m = A_key.order + Integer::One();
-    pair<string,Capsule> a = Pre_Enc(plain_txt,A_key.publickey);
-    pair<Integer,Integer> b = Pre_ReKeyGen(A_key.privatekey,B_key.publickey);
-    Capsule cap = Pre_ReEncryption(b.first,a.second);
-    Integer k = Pre_ReCreateKey(B_key.privatekey,B_key.publickey,cap,b.second);
-    string m_dec = Pre_Decryption(k,a.first);
-    cout << m_dec;
-    return 0;
 }
 #endif

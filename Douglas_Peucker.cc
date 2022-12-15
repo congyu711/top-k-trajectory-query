@@ -10,6 +10,16 @@ struct Point
     double x;
     double y;
     Point(double _time=0.0,double _x=0.0,double _y=0.0): time(_time),x(_x),y(_y){}
+    bool operator == (Point a)
+    {
+        if(a.x==this->x&&a.y==this->y)
+        {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 };
 
 class Douglas_Peucker
@@ -22,16 +32,13 @@ public:
     bool execute(const vector<Point> &pointList,vector<Point> &resultPointList,const float &thrdistance);
 };
 
-Douglas_Peucker::Douglas_Peucker()
-{
-
-}
+Douglas_Peucker::Douglas_Peucker(){}
 
 bool Douglas_Peucker::execute(const vector<Point> &pointList,vector<Point> &resultPointList,const float &thrdistance)
 {
     try
     {
-        if(pointList.size()<=3 )
+        if(pointList.size()<=2 )
         {
             cout << "无需压缩" << endl;
             return false;
@@ -54,6 +61,7 @@ bool Douglas_Peucker::execute(const vector<Point> &pointList,vector<Point> &resu
     {
         std::cerr << e.what() << '\n';
     }
+    return false;
 }
 
 float Douglas_Peucker::distanceofPointtoLine(const Point &p,const vector<Point> &line)
@@ -88,19 +96,22 @@ void Douglas_Peucker::condense(const vector<Point> &pointList,vector<int> &keyPo
     }
 }
 
-// int main()
-// {
-//     Douglas_Peucker DP;
-//     vector<Point> pointList;
-//     vector<Point> resultPointList;
-//     pointList.push_back(Point(0,0,0));
-//     pointList.push_back(Point(0,1,2));
-//     pointList.push_back(Point(0,2,1));
-//     pointList.push_back(Point(0,5,0));
-//     DP.execute(pointList,resultPointList,0.5);
-//     int resultLength=resultPointList.size();
-//     for(int i=0;i<resultLength;++i)
-//     {
-//         std::cout<<resultPointList[i].x<<','<<resultPointList[i].y<<std::endl;
-//     }
-// }
+#ifdef _Douglas_Peucker_test_
+int main()
+{
+    Douglas_Peucker DP;
+    vector<Point> pointList;
+    vector<Point> resultPointList;
+    pointList.push_back(Point(0,0,0));
+    pointList.push_back(Point(0,1,2));
+    pointList.push_back(Point(0,2,1));
+    pointList.push_back(Point(0,3,1));
+    pointList.push_back(Point(0,5,0));
+    DP.execute(pointList,resultPointList,0.5);
+    int resultLength=resultPointList.size();
+    for(int i=0;i<resultLength;++i)
+    {
+        std::cout<<resultPointList[i].x<<','<<resultPointList[i].y<<std::endl;
+    }
+}
+#endif
