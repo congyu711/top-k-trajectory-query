@@ -273,7 +273,7 @@ int main(){
     ElGamal_keys QU_key = Pre_ReEnc.ElGamal_key_generation();
     ElGamal_keys CS1_key = Pre_ReEnc.ElGamal_key_generation();
     vector<string> ID = {string("0"),string("1"),string("2"),string("3"),string("4")};
-    pair<vector<string>,Capsule> mess = Pre_ReEnc.Pre_Enc(ID,DO_key.publickey);
+    pair<vector<string>,Capsule> mess = Pre_ReEnc.Pre_Enc(ID,DO_key.privatekey,QU_key.publickey);
     vector<string> cipher_txt;
     Elgamal_Enc(phi_list[0],cipher_txt,QU_key.publickey);
     pair<Integer,Integer> comversion_key = Pre_ReEnc.Pre_ReKeyGen(DO_key.privatekey,QU_key.publickey);
@@ -363,7 +363,7 @@ int main(){
         R.push_back(encodingList[K[x.second].second]);
     }
     Capsule cap =  Pre_ReEnc.Pre_ReEncryption(comversion_key.first,mess.second);
-    Integer pri_key = Pre_ReEnc.Pre_ReCreateKey(QU_key.privatekey,QU_key.publickey,cap,comversion_key.second);
+    Integer pri_key = Pre_ReEnc.Pre_ReCreateKey(QU_key.privatekey,QU_key.publickey,DO_key.publickey,cap,comversion_key.second);
     vector<string> txt_Dec = Pre_ReEnc.Pre_Decryption(pri_key,kid);
     // for(auto x:txt_Dec)
     // {

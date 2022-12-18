@@ -10,7 +10,8 @@ using namespace CryptoPP;
 using namespace std;
 typedef DL_GroupParameters_EC<ECP> GroupParameters;
 typedef DL_GroupParameters_EC<ECP>::Element Element;
-
+Integer e;
+Integer v;
 AutoSeededRandomPool prng;
 
 class ElGamal_keys
@@ -38,16 +39,16 @@ private:
 public:
     void ECIES_Encryption(string plain_txt,Element PublicKey,string& cipher_txt);
     void ECIES_Decryption(string cipher_txt,Integer PrivateKey,string& plain_txt);
-    pair<vector<string>,Capsule> Pre_Enc(vector<string> plain_txt,Integer A_publickey);
+    pair<vector<string>,Capsule> Pre_Enc(vector<string> plain_txt,Integer A_privatekey,Integer B_publickey);
     pair<Integer,Integer> Pre_ReKeyGen(Integer A_privatekey,Integer B_publickey);
     Capsule Pre_ReEncryption(Integer rk,Capsule cap);
-    Integer Pre_ReCreateKey(Integer B_privatekey,Integer B_publickey,Capsule cap,Integer X);
+    Integer Pre_ReCreateKey(Integer B_privatekey,Integer B_publickey,Integer A_publickey,Capsule cap,Integer X);
     vector<string> Pre_Decryption(Integer privatekey,vector<string> cipher_txt);
     ElGamal_keys ElGamal_key_generation();
     void ElGamal_Encryption(string &plain_txt,string &cipher_txt,Integer publickey);
     void ElGamal_Decryption(string &cipher_txt,string &decryption_txt,Integer privatekey);
     Proxy_ReEncryption(){
-        g.Initialize(prng,150);
+        g.Initialize(prng,200);
         m = g.GetGroupOrder() + Integer::One();
         gen = g.GetGenerator();
     }
@@ -88,6 +89,7 @@ pair<Integer,Element> Proxy_ReEncryption::ECC_key_generation(Integer x){
     group.Initialize(ASN1::secp256r1());
 
     x = x % group.GetGroupOrder();
+    // cout<<group.GetGroupOrder()<<"\n";
         
     // public key
     Element y = group.ExponentiateBase(x);
@@ -123,6 +125,7 @@ void Proxy_ReEncryption::ECIES_Encryption(string plain_txt,Element PublicKey,str
 void Proxy_ReEncryption::ECIES_Decryption(string cipher_txt,Integer PrivateKey,string& plain_txt){
     ECIES<ECP>::Decryptor d0;
     d0.AccessKey().AccessGroupParameters().Initialize(ASN1::secp256r1());
+    // cout<<"K1: "<<PrivateKey<<"\n";
     d0.AccessKey().SetPrivateExponent(PrivateKey);
     StringSource ss(cipher_txt,true,new PK_DecryptorFilter(prng,d0,new StringSink(plain_txt)));
     
@@ -143,22 +146,23 @@ string Integer_to_string(Integer x){
     return y;
 }
 
-pair<vector<string>,Capsule> Proxy_ReEncryption::Pre_Enc(vector<string> plain_txt,Integer A_publickey){ 
-    Integer min = Integer("1000000000");
-    Integer max = Integer("100000000000000");
+pair<vector<string>,Capsule> Proxy_ReEncryption::Pre_Enc(vector<string> plain_txt,Integer A_privatekey,Integer B_publickey){ 
+    Integer min = Integer("100000");
+    Integer max = Integer("10000000000");
     SHA256 hash;
     string digest;
     // random_num e,v
-    Integer e = Integer(prng,min,max);
-    Integer v = Integer(prng,min,max);
+    e = Integer(prng,min,max);
+    v = Integer(prng,min,max);
     Integer E = a_exp_b_mod_c(gen,e,m);
     Integer V = a_exp_b_mod_c(gen,v,m);
     string hash_str = Integer_to_string(E) + Integer_to_string(V);
     StringSource ss(hash_str,true ,new HashFilter(hash,new HexEncoder(new StringSink(digest))));
     Integer s = v + e*to_Integer(digest);
-    Integer k = a_exp_b_mod_c(A_publickey,e+v,m);
+    Integer k = (a_exp_b_mod_c(B_publickey,A_privatekey,m)*v)%m;
     // cout <<"k1: "<<k <<endl;
     pair<Integer,Element> K = ECC_key_generation(k);
+    // cout<<"K: "<<K.first<<"\n";
     vector<string> m_Enc;
     for(string a:plain_txt)
     {
@@ -177,8 +181,8 @@ pair<Integer,Integer> Proxy_ReEncryption::Pre_ReKeyGen(Integer A_privatekey,Inte
     string digest;
     StringSource ss(hash_str,true,new HashFilter(hash,new HexEncoder(new StringSink(digest))));
     // cout << "d1: " << digest<<endl;
-    Integer d_inverse = to_Integer(digest).InverseMod(m-Integer::One());
-    Integer rk = A_privatekey*d_inverse;
+    Integer d_inverse = to_Integer(digest).InverseMod(m);
+    Integer rk = e*d_inverse;
     return make_pair(rk,X);
 }
 
@@ -188,11 +192,12 @@ Capsule Proxy_ReEncryption::Pre_ReEncryption(Integer rk,Capsule cap){
     string digest;
     Integer E1;
     Integer V1;
+    Integer r = Integer(prng,Integer("1000000"),Integer("100000000000000"));
     StringSource ss((Integer_to_string(cap.E)+Integer_to_string(cap.V)),true,new HashFilter(hash,new HexEncoder(new StringSink(digest))));
     Integer b = (cap.V*a_exp_b_mod_c(cap.E,to_Integer(digest),m))%m;
     if(a == b){
-        E1 = a_exp_b_mod_c(cap.E,rk,m);
-        V1 = a_exp_b_mod_c(cap.V,rk,m);
+        E1 = r*rk;
+        V1 = r.InverseMod(m)*to_Integer(digest);
     }
     else{
         cout<<"error"<<endl;
@@ -202,13 +207,16 @@ Capsule Proxy_ReEncryption::Pre_ReEncryption(Integer rk,Capsule cap){
     return Capsule(E1,V1,cap.s);
 }
 
-Integer Proxy_ReEncryption::Pre_ReCreateKey(Integer B_privatekey,Integer B_publickey,Capsule cap,Integer X){
+Integer Proxy_ReEncryption::Pre_ReCreateKey(Integer B_privatekey,Integer B_publickey,Integer A_publickey,Capsule cap,Integer X){
     SHA256 hash;
     string digest;
     string hash_str = Integer_to_string(X)+Integer_to_string(B_publickey)+Integer_to_string(a_exp_b_mod_c(X,B_privatekey,m));
     StringSource ss(hash_str,true,new HashFilter(hash,new HexEncoder(new StringSink(digest))));
-    // cout << "d2: " <<digest<<endl;
-    Integer k = a_exp_b_mod_c(cap.E*cap.V,to_Integer(digest),m);
+    cout << "d2: " <<digest<<endl;
+    Integer ex = (cap.s%m-cap.E*cap.V*to_Integer(digest)%m);
+    // cout<<"v: "<<ex<<"\n";
+    cout<<"x: "<<a_exp_b_mod_c(A_publickey,B_privatekey,m)<<"\n";
+    Integer k = (a_exp_b_mod_c(A_publickey,B_privatekey,m)*ex)%m;
     // cout<<"k2: "<< k <<endl;
     pair<Integer,Element> K = ECC_key_generation(k);
     return K.first;
@@ -225,7 +233,7 @@ vector<string> Proxy_ReEncryption::Pre_Decryption(Integer privatekey,vector<stri
     return m_dec;
 }
 
-#ifdef __Proxy_ReEncryption_test__
-int main(){
-}
-#endif
+// #ifdef __Proxy_ReEncryption_test__
+// int main(){
+// }
+// #endif
