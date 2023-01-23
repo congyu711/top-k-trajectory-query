@@ -2,35 +2,8 @@
 #include <algorithm>
 #include <cmath>
 #include <vector>
+#include "function_declaration.h"
 using namespace std;
-
-struct Point
-{
-    double time;
-    double x;
-    double y;
-    Point(double _time=0.0,double _x=0.0,double _y=0.0): time(_time),x(_x),y(_y){}
-    bool operator == (Point a)
-    {
-        if(a.x==this->x&&a.y==this->y)
-        {
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-};
-
-class Douglas_Peucker
-{
-private:
-    float distanceofPointtoLine(const Point &p,const vector<Point> &line);
-    void condense(const vector<Point> &pointList,vector<int> &keyPointIndexList,int firstIndex,int endIndex,const float &thrDistance);
-public:
-    Douglas_Peucker();
-    bool execute(const vector<Point> &pointList,vector<Point> &resultPointList,const float &thrdistance);
-};
 
 Douglas_Peucker::Douglas_Peucker(){}
 

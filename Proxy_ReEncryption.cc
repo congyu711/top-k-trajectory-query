@@ -6,53 +6,12 @@
 #include <cryptopp/oids.h>
 #include <iostream>
 #include <iomanip>
+#include "function_declaration.h"
 using namespace CryptoPP;
 using namespace std;
-typedef DL_GroupParameters_EC<ECP> GroupParameters;
-typedef DL_GroupParameters_EC<ECP>::Element Element;
+
 Integer e;
 Integer v;
-AutoSeededRandomPool prng;
-
-class ElGamal_keys
-{
-public:
-    Integer privatekey,publickey,order,generator;
-    ElGamal_keys(Integer _privatekey,Integer _publickey,Integer _order,Integer _gen):
-        privatekey(_privatekey),publickey(_publickey),order(_order),generator(_gen){}
-};
-
-class Capsule
-{
-public:
-    Integer E,V,s;
-    Capsule(Integer _E,Integer _V,Integer _s):
-        E(_E),V(_V),s(_s){}
-};
-
-class Proxy_ReEncryption
-{
-private:
-    pair<Integer,Element> ECC_key_generation(Integer x);
-    DL_GroupParameters_ElGamal g;
-    Integer m,gen;
-public:
-    void ECIES_Encryption(string plain_txt,Element PublicKey,string& cipher_txt);
-    void ECIES_Decryption(string cipher_txt,Integer PrivateKey,string& plain_txt);
-    pair<vector<string>,Capsule> Pre_Enc(vector<string> plain_txt,Integer A_privatekey,Integer B_publickey);
-    pair<Integer,Integer> Pre_ReKeyGen(Integer A_privatekey,Integer B_publickey);
-    Capsule Pre_ReEncryption(Integer rk,Capsule cap);
-    Integer Pre_ReCreateKey(Integer B_privatekey,Integer B_publickey,Integer A_publickey,Capsule cap,Integer X);
-    vector<string> Pre_Decryption(Integer privatekey,vector<string> cipher_txt);
-    ElGamal_keys ElGamal_key_generation();
-    void ElGamal_Encryption(string &plain_txt,string &cipher_txt,Integer publickey);
-    void ElGamal_Decryption(string &cipher_txt,string &decryption_txt,Integer privatekey);
-    Proxy_ReEncryption(){
-        g.Initialize(prng,200);
-        m = g.GetGroupOrder() + Integer::One();
-        gen = g.GetGenerator();
-    }
-};
 
 ElGamal_keys Proxy_ReEncryption::ElGamal_key_generation(){
     //private_key
@@ -97,24 +56,6 @@ pair<Integer,Element> Proxy_ReEncryption::ECC_key_generation(Integer x){
     return make_pair(x,y);
 }
 
-//outpt the cipher_txt in hex
-void printstring(const string& str, ostream& out=cout)
-{
-    string o;
-    for(int i=0;i<str.length();i++)
-    {
-        stringstream ss;
-        string a;
-        int num=0;
-        uint tmp=str[i];
-        for(int j=0;j<8;j++)    {num+=((tmp&0x80)>>7)<<(8-j-1);tmp<<=1;}
-        ss << hex << num;
-        ss >> a;
-        o += a;
-    }
-    out<<"Cipher_txt: "<<o<<endl;
-}
-
 void Proxy_ReEncryption::ECIES_Encryption(string plain_txt,Element PublicKey,string& cipher_txt){
     ECIES<ECP>::Encryptor e0;
     e0.AccessKey().AccessGroupParameters().Initialize(ASN1::secp256r1());
@@ -129,21 +70,6 @@ void Proxy_ReEncryption::ECIES_Decryption(string cipher_txt,Integer PrivateKey,s
     d0.AccessKey().SetPrivateExponent(PrivateKey);
     StringSource ss(cipher_txt,true,new PK_DecryptorFilter(prng,d0,new StringSink(plain_txt)));
     
-}
-
-Integer to_Integer(string a){
-    Integer b;
-    for (auto i = 0;i < a.length()-1;i++){
-        b = (Integer(a[i]) - Integer("48")) + b*Integer("10");
-    }
-    return b;
-}
-
-string Integer_to_string(Integer x){
-    stringstream ss;
-    ss<<x;
-    string y(ss.str());
-    return y;
 }
 
 pair<vector<string>,Capsule> Proxy_ReEncryption::Pre_Enc(vector<string> plain_txt,Integer A_privatekey,Integer B_publickey){ 

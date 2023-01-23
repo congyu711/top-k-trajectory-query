@@ -172,6 +172,7 @@ public:
         }
     }
 };
+
 #ifdef __HILBERTCURVE_TEST__
 int main()
 {

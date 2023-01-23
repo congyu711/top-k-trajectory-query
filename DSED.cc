@@ -1,38 +1,13 @@
 #include <bits/stdc++.h>
-#include <gmpxx.h>
+#include <crypto++/integer.h>
+#include "function_declaration.h"
+using namespace CryptoPP;
 using namespace std;
-
-// template<class Point>
-// bool mycmp(Point a,Point b)
-// {
-//     return a.time<=b.time;
-// }
 
 bool mycmp1(pair<double,string> a,pair<double,string> b)
 {
     return a.first<=b.first;
 }
-
-// template<class Point>
-// double dist(Point a,vector<Point> &b)
-// {
-//     double res 
-//     auto p = lower_bound(b.begin(),b.end(),a,mycmp<Point>);
-//     if(p != b.end())
-//     {
-//         auto q = p-1;
-//         double w1 = ((*p).time-a.time)/((*p).time-(*q).time);
-//         double w2 = 1-w1;
-//         double bx = w1*(*p).x + w2*(*q).x;
-//         double by = w1*(*p).y + w2*(*q).y;
-//         res = sqrt(pow(a.x-bx,2)+pow(a.y-by,2));
-//     }
-//     else
-//     {
-//         res = 0.0;
-//     }
-//     return res;
-// }
 
 int D_H(string &a,string &b,map<string,vector<string>> &dict)
 {
@@ -61,23 +36,23 @@ double dist(pair<double,string> &a,vector<pair<double,string>> b,map<string,vect
     return tmp;
 }
 
-mpz_class dist1(pair<double,string> &a,vector<pair<double,string>> b,map<string,vector<string>> &dict)
+Integer dist1(pair<double,string> &a,vector<pair<double,string>> b,map<string,vector<string>> &dict)
 {
-    mpz_class tmp;
+    Integer tmp;
     auto p = lower_bound(b.begin(),b.end(),a,mycmp1);
     if(p!=b.end())
     {
         auto q = p-1;
-        mpz_class ay(dict[a.second].back());
-        mpz_class b1y(dict[(*q).second].back());
-        mpz_class b2y(dict[(*p).second].back());
-        mpz_class ax(*(dict[a.second].end()-2));
-        mpz_class b1x(*(dict[(*q).second].end()-2));
-        mpz_class b2x(*(dict[(*p).second].end()-2));
-        mpz_class w1(((*p).first-a.first)/((*p).first-(*q).first));
-        mpz_class w2((a.first-(*q).first)/((*p).first-(*q).first));
-        mpz_class bx = w1*b1x + w2*b2x;
-        mpz_class by = w1*b1y + w2*b2y;
+        Integer ay = to_Integer(dict[a.second].back());
+        Integer b1y = to_Integer(dict[(*q).second].back());
+        Integer b2y = to_Integer(dict[(*p).second].back());
+        Integer ax = to_Integer(*(dict[a.second].end()-2));
+        Integer b1x = to_Integer(*(dict[(*q).second].end()-2));
+        Integer b2x = to_Integer(*(dict[(*p).second].end()-2));
+        Integer w1(((*p).first-a.first)/((*p).first-(*q).first));
+        Integer w2((a.first-(*q).first)/((*p).first-(*q).first));
+        Integer bx = w1*b1x + w2*b2x;
+        Integer by = w1*b1y + w2*b2y;
         tmp = (ax-bx)*(ax-bx)+(ay-by)*(ay-by);
     }
     return tmp;
@@ -163,11 +138,11 @@ double DSED(vector<pair<double,string>> &a,vector<pair<double,string>> &b,map<st
     return dsed;
 }
 
-pair<mpz_class,double> DSED1(vector<pair<double,string>> &a,vector<pair<double,string>> &b,map<string,vector<string>> &dict)
+pair<Integer,double> DSED1(vector<pair<double,string>> &a,vector<pair<double,string>> &b,map<string,vector<string>> &dict)
 {
     vector<pair<double,string>> c = merge(a,b);
     // cout<<c.size()<<"\n";
-    vector<mpz_class> d;
+    vector<Integer> d;
     double time;
     if(c.size()<3)
     {
@@ -187,7 +162,7 @@ pair<mpz_class,double> DSED1(vector<pair<double,string>> &a,vector<pair<double,s
         }
 
     }
-    mpz_class dsed = d[0]*(c[2].first-c[1].first);
+    Integer dsed = d[0]*(c[2].first-c[1].first);
     if(d.size()>=2)
     {
         for(int i=1;i<d.size()-1;i++)
