@@ -1,6 +1,10 @@
-#include <bits/stdc++.h>
+#ifndef __SORT
+#define __SORT
+#include <queue>
 #include <crypto++/integer.h>
-#include "function_declaration.h"
+#include "SHE_Encryption.cc"
+#include "Proxy_ReEncryption.cc"
+#include "DSED.cc"
 using namespace std;
 using namespace CryptoPP;
 #define random(x) (rand()%x)
@@ -97,3 +101,4 @@ void trajection_and_ID(vector<vector<pair<double,string>>> &encodingList,pair<ve
         result_trajection.push_back(encodingList[K[x.second].second]);
     }
 }
+#endif

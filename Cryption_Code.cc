@@ -1,6 +1,8 @@
-#include <bits/stdc++.h>
+#ifndef __CRYPTION
+#define __CRYPTION
 #include "hilbertcurve.cc"
-#include "function_declaration.h"
+#include "Proxy_ReEncryption.cc"
+#include "Douglas_Peucker.cc"
 using namespace std;
 using namespace CryptoPP;
 
@@ -111,3 +113,4 @@ void query_encode(vector<Point> &trajectionList,Phi phi,vector<pair<double,strin
         encodingList.push_back(tmp);
     }
 }
+#endif

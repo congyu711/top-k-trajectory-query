@@ -1,6 +1,9 @@
-#include <bits/stdc++.h>
-#include "function_declaration.h"
+#ifndef __PREL
+#define __PREL
+#include "Douglas_Peucker.cc"
+#include "Proxy_ReEncryption.cc"
 #include "hilbertcurve.cc"
+#include "SHE_Encryption.cc"
 using namespace std;
 
 void read_data(string file_name,vector<vector<Point>> &trajectionList)
@@ -115,21 +118,22 @@ int main()
     string file_name("data.txt");
     vector<vector<Point>> trajectionList;
     map<string,vector<string>> dict;
-    SHE she;
-    she.setup();
+    SHE she(500,16,100);
+    // she.setup();
     auto sk = she.Key_Generation();
     read_data(file_name,trajectionList);
     vacuate(trajectionList);
     mapping_table(trajectionList,phi_list,dict,she,sk);
-    // for(auto a:trajectionList[1])
-    // {
-    //     hilbertcurve hc({phi_list[0].order,phi_list[0].origin,phi_list[0].direcion,phi_list[0].gamma});
-    //     string h = hc.xy2H[a.x][a.y];
-    //     vector<string> b = dict[h];
-    //     for(auto c:b)
-    //     {
-    //         cout << c <<"\n";
-    //     }
-    // }
+    for(auto a:trajectionList[1])
+    {
+        hilbertcurve hc({phi_list[0].order,phi_list[0].origin,phi_list[0].direcion,phi_list[0].gamma});
+        string h = hc.xy2H[a.x][a.y];
+        vector<string> b = dict[h];
+        for(auto c:b)
+        {
+            cout << c <<"\n";
+        }
+    }
 }
+#endif
 #endif
