@@ -1,11 +1,38 @@
+#ifndef __Dou
+#define __Dou
 #include <iostream>
 #include <algorithm>
 #include <cmath>
 #include <vector>
-#include "function_declaration.h"
+// #include "function_declaration.h"
 using namespace std;
 
-Douglas_Peucker::Douglas_Peucker(){}
+struct Point
+{
+    double time;
+    double x;
+    double y;
+    Point(double _time=0.0,double _x=0.0,double _y=0.0): time(_time),x(_x),y(_y){}
+    bool operator == (Point a)
+    {
+        if(a.x==this->x&&a.y==this->y)
+        {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+};
+
+class Douglas_Peucker
+{
+private:
+    float distanceofPointtoLine(const Point &p,const vector<Point> &line);
+    void condense(const vector<Point> &pointList,vector<int> &keyPointIndexList,int firstIndex,int endIndex,const float &thrDistance);
+public:
+    bool execute(const vector<Point> &pointList,vector<Point> &resultPointList,const float &thrdistance);
+};
 
 bool Douglas_Peucker::execute(const vector<Point> &pointList,vector<Point> &resultPointList,const float &thrdistance)
 {
@@ -13,7 +40,8 @@ bool Douglas_Peucker::execute(const vector<Point> &pointList,vector<Point> &resu
     {
         if(pointList.size()<=2 )
         {
-            cout << "无需压缩" << endl;
+            // cerr << "no need to compress.\n";
+            throw "no need to compress";
             return false;
         }
         vector<int> keyPointIndexList;
@@ -87,4 +115,5 @@ int main()
         std::cout<<resultPointList[i].x<<','<<resultPointList[i].y<<std::endl;
     }
 }
+#endif
 #endif

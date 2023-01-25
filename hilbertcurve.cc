@@ -1,3 +1,6 @@
+#ifndef __HIL
+#define __HIL
+
 #include <bits/stdc++.h>
 using namespace std;
 ///////////////////////////////////////////////////////////////////////////
@@ -187,4 +190,5 @@ int main()
         cout<<endl;
     }
 }
+#endif
 #endif

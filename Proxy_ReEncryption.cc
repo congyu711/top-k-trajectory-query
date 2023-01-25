@@ -1,3 +1,5 @@
+#ifndef __PROXYRENC
+#define __PROXYRENC
 #include <cryptopp/integer.h>
 #include <cryptopp/eccrypto.h>
 #include <cryptopp/elgamal.h>
@@ -6,9 +8,62 @@
 #include <cryptopp/oids.h>
 #include <iostream>
 #include <iomanip>
-#include "function_declaration.h"
+#include "base.h"
 using namespace CryptoPP;
 using namespace std;
+
+typedef DL_GroupParameters_EC<ECP> GroupParameters;
+typedef DL_GroupParameters_EC<ECP>::Element Element;
+AutoSeededRandomPool prng;
+
+struct Phi
+{
+    uint order;
+    pair<int,int> origin;
+    char direcion;
+    double gamma;
+};
+
+class ElGamal_keys
+{
+public:
+    Integer privatekey,publickey,order,generator;
+    ElGamal_keys(Integer _privatekey,Integer _publickey,Integer _order,Integer _gen):
+        privatekey(_privatekey),publickey(_publickey),order(_order),generator(_gen){}
+};
+
+class Capsule
+{
+public:
+    Integer E,V,s;
+    Capsule(Integer _E,Integer _V,Integer _s):
+        E(_E),V(_V),s(_s){}
+};
+
+
+class Proxy_ReEncryption
+{
+private:
+    pair<Integer,Element> ECC_key_generation(Integer x);
+    DL_GroupParameters_ElGamal g;
+    Integer m,gen;
+public:
+    void ECIES_Encryption(string plain_txt,Element PublicKey,string& cipher_txt);
+    void ECIES_Decryption(string cipher_txt,Integer PrivateKey,string& plain_txt);
+    pair<vector<string>,Capsule> Pre_Enc(vector<string> plain_txt,Integer A_privatekey,Integer B_publickey);
+    pair<Integer,Integer> Pre_ReKeyGen(Integer A_privatekey,Integer B_publickey);
+    Capsule Pre_ReEncryption(Integer rk,Capsule cap);
+    Integer Pre_ReCreateKey(Integer B_privatekey,Integer B_publickey,Integer A_publickey,Capsule cap,Integer X);
+    vector<string> Pre_Decryption(Integer privatekey,vector<string> cipher_txt);
+    ElGamal_keys ElGamal_key_generation();
+    void ElGamal_Encryption(string &plain_txt,string &cipher_txt,Integer publickey);
+    void ElGamal_Decryption(string &cipher_txt,string &decryption_txt,Integer privatekey);
+    Proxy_ReEncryption(){
+        g.Initialize(prng,200);
+        m = g.GetGroupOrder() + Integer::One();
+        gen = g.GetGenerator();
+    }
+};
 
 Integer e;
 Integer v;
@@ -159,7 +214,7 @@ vector<string> Proxy_ReEncryption::Pre_Decryption(Integer privatekey,vector<stri
     return m_dec;
 }
 
-// #ifdef __Proxy_ReEncryption_test__
-// int main(){
-// }
-// #endif
+#ifdef __Proxy_ReEncryption_test__
+int main(){}
+#endif
+#endif

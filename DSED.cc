@@ -1,6 +1,9 @@
-#include <bits/stdc++.h>
+#ifndef __DSED
+#define __DSED
+#include <vector>
+
 #include <crypto++/integer.h>
-#include "function_declaration.h"
+#include "base.h"
 using namespace CryptoPP;
 using namespace std;
 
@@ -179,3 +182,4 @@ pair<Integer,double> DSED1(vector<pair<double,string>> &a,vector<pair<double,str
     }
     return make_pair(dsed,time);
 }
+#endif

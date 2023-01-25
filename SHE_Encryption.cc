@@ -1,33 +1,28 @@
+#ifndef __SHE
+#define __SHE
+
 #include <iostream>
 #include <string>
 #include <iomanip>
 #include <crypto++/integer.h>
 #include <crypto++/osrng.h>
 #include <crypto++/nbtheory.h>
-#include "function_declaration.h"
+// #include "function_declaration.h"
 using namespace std;
 using namespace CryptoPP;
 
 class SHE
 {
-    private:
-        Integer P;
-        Integer L;
     public:
-        void setup(int a,int b,int c);
+        SHE(int _k0,int _k1,int _k2):k0(_k0),k1(_k1),k2(_k2){}
         Integer N;
+        AutoSeededRandomPool prng;
         int k0,k1,k2;
         pair<Integer,Integer> Key_Generation();
         Integer Encryption(Integer plain_txt,pair<Integer,Integer> sk,Integer N);
         Integer Decryption(pair<Integer,Integer> sk,Integer cipher_txt);
 };
 
-void SHE::setup(int a,int b,int c)
-{
-    k0 = a;
-    k1 = b;
-    k2 = c;
-}
 
 pair<Integer,Integer> SHE::Key_Generation(){
     PrimeAndGenerator pg;
@@ -40,7 +35,7 @@ pair<Integer,Integer> SHE::Key_Generation(){
     q = pg.Prime();
     L = Integer(prng,k2);
     N = p*q;
-    cout << hex << p<<endl<<q<<endl<<L;
+    // cout << hex << p<<endl<<q<<endl<<L;
     return make_pair(p,L);
 }
 
@@ -59,8 +54,7 @@ Integer SHE::Decryption(pair<Integer,Integer> sk,Integer cipher_txt){
 #ifdef __SHE_encrypt__
 int main()
 {
-    SHE a;
-    a.setup();
+    SHE a(500,16,100);
     pair<Integer,Integer> sk = a.Key_Generation();
     cout<<sk.first<<endl<<sk.second;
     Integer m("521");
@@ -69,4 +63,5 @@ int main()
     Integer Dm = a.Decryption(sk,Em+Integer::Two());
     cout<<dec<<Dm<<endl;
 }
+#endif
 #endif
