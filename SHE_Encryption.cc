@@ -14,7 +14,7 @@ using namespace CryptoPP;
 class SHE
 {
     public:
-        SHE(int _k0,int _k1,int _k2):k0(_k0),k1(_k1),k2(_k2){}
+        SHE(int _k0=50,int _k1=16,int _k2=100):k0(_k0),k1(_k1),k2(_k2){}
         Integer N;
         AutoSeededRandomPool prng;
         int k0,k1,k2;

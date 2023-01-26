@@ -15,6 +15,9 @@ Douglas_Peucker: Douglas_Peucker.cc
 
 DSED: DSED.cc
 	$(CCC) $^ -o $@ $(CRYPTOPP)
+
+main: main.cc
+	$(CCC) $^ -o $@ $(CRYPTOPP)
 # extend: extend.cc
 # 	$(CCC) extend.cc -o extend $(CRYPTOPP)
 

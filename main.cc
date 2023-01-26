@@ -1,7 +1,9 @@
 #include <bits/stdc++.h>
 #include <cryptopp/integer.h>
-#include "hilbertcurve.cc"
-#include "function_declaration.h"
+#include "Cryption_Code.cc"
+#include "Preliminarie.cc"
+#include "sort.cc"
+
 using namespace std;
 using namespace CryptoPP;
 
@@ -10,7 +12,7 @@ Proxy_ReEncryption Pre_ReEnc;
 SHE she;
 
 int main(){
-    she.setup();
+    // she.setup();
     string file_name("data.txt");
     uint N = 3;//order of the curve
     int r=3;//the number of curve;

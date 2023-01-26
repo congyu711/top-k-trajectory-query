@@ -6,8 +6,6 @@
 #include <cryptopp/osrng.h>
 #include <cryptopp/hex.h>
 #include <cryptopp/oids.h>
-#include <iostream>
-#include <iomanip>
 #include "base.h"
 using namespace CryptoPP;
 using namespace std;
@@ -193,10 +191,10 @@ Integer Proxy_ReEncryption::Pre_ReCreateKey(Integer B_privatekey,Integer B_publi
     string digest;
     string hash_str = Integer_to_string(X)+Integer_to_string(B_publickey)+Integer_to_string(a_exp_b_mod_c(X,B_privatekey,m));
     StringSource ss(hash_str,true,new HashFilter(hash,new HexEncoder(new StringSink(digest))));
-    cout << "d2: " <<digest<<endl;
+    // cout << "d2: " <<digest<<endl;
     Integer ex = (cap.s%m-cap.E*cap.V*to_Integer(digest)%m);
     // cout<<"v: "<<ex<<"\n";
-    cout<<"x: "<<a_exp_b_mod_c(A_publickey,B_privatekey,m)<<"\n";
+    // cout<<"x: "<<a_exp_b_mod_c(A_publickey,B_privatekey,m)<<"\n";
     Integer k = (a_exp_b_mod_c(A_publickey,B_privatekey,m)*ex)%m;
     // cout<<"k2: "<< k <<endl;
     pair<Integer,Element> K = ECC_key_generation(k);
