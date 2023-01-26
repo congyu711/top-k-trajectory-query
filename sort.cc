@@ -52,7 +52,7 @@ void compute_dist(vector<double> &distlist,vector<vector<pair<double,string>>> &
     }
 }
 
-void compute_dist1(vector<pair<Integer,double>> distlist1,vector<pair<double,int>> &K,SHE &she,pair<Integer,Integer> sk,vector<vector<pair<double,string>>> &encondinglist_K,vector<vector<pair<double,string>>> &encodingList,map<string,vector<string>> &dict,vector<pair<double,string>> &encoding_qu)
+void compute_dist1(vector<pair<Integer,double>> &distlist1,vector<pair<double,int>> &K,SHE &she,pair<Integer,Integer> sk,vector<vector<pair<double,string>>> &encondinglist_K,vector<vector<pair<double,string>>> &encodingList,map<string,vector<string>> &dict,vector<pair<double,string>> &encoding_qu)
 {
     for(auto x:K)
     {
@@ -93,7 +93,7 @@ vector<double> compute_D(SHE &she,pair<Integer,Integer> sk,vector<pair<Integer,d
     return D;
 }
 
-void trajection_and_ID(vector<vector<pair<double,string>>> &encodingList,pair<vector<string>,Capsule> &mess,vector<pair<double,int>> K,vector<string> &kid,vector<vector<pair<double,string>>> &result_trajection,vector<pair<double,int>> &k)
+void trajection_and_ID(vector<vector<pair<double,string>>> &encodingList,pair<vector<string>,Capsule> &mess,vector<pair<double,int>> &K,vector<string> &kid,vector<vector<pair<double,string>>> &result_trajection,vector<pair<double,int>> &k)
 {
     for(auto x:k)
     {
