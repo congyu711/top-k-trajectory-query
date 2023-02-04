@@ -1,19 +1,27 @@
-#include <bits/stdc++.h>
-#include <cryptopp/integer.h>
+// #include <bits/stdc++.h>
+// #include <cryptopp/integer.h>
 #include "Cryption_Code.cc"
 #include "Preliminarie.cc"
 #include "sort.cc"
+#include <boost/python.hpp>
 
 using namespace std;
 using namespace CryptoPP;
 
-map<string,vector<string>> dict;
-Proxy_ReEncryption Pre_ReEnc;
-SHE she;
+class fullprocess
+{
+public:
+    const int a=10;
+    map<string,vector<string>> dict;
+    Proxy_ReEncryption Pre_ReEnc;
+    SHE she;
+    bool exec(string datafile="data.txt");
+};
 
-int main(){
+bool fullprocess::exec(string datafile)
+{
     // she.setup();
-    string file_name("data.txt");
+    string file_name(datafile);
     uint N = 3;//order of the curve
     int r=3;//the number of curve;
     auto phi_list = hilbertcurve_generator(N,r);
@@ -119,4 +127,22 @@ int main(){
         }
         cout<<"\n";
     }
+    return true;
 }
+BOOST_PYTHON_MODULE(fullprocess)
+{
+    boost::python::class_<fullprocess, boost::noncopyable>("fullprocess", boost::python::init<>())
+        .def("exec", &fullprocess::exec);
+}
+
+
+/*
+
+g++ main.cc -fPIC -shared -o fullprocess.so -I/usr/include/python3.10 -L. -lboost_python310 -lcryptopp
+
+example.py:
+    import fullprocess
+
+    ins=fullprocess.fullprocess()
+    ins.exec("data.txt")
+*/
