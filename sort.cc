@@ -52,7 +52,7 @@ void compute_dist(vector<double> &distlist,vector<vector<pair<double,string>>> &
     }
 }
 
-void compute_dist1(vector<pair<Integer,double>> &distlist1,vector<pair<double,int>> &K,SHE &she,pair<Integer,Integer> sk,vector<vector<pair<double,string>>> &encondinglist_K,vector<vector<pair<double,string>>> &encodingList,map<string,vector<string>> &dict,vector<pair<double,string>> &encoding_qu)
+void compute_dist1(vector<pair<Integer,double>> &distlist1,vector<pair<double,int>> &K,vector<vector<pair<double,string>>> &encondinglist_K,vector<vector<pair<double,string>>> &encodingList,map<string,vector<string>> &dict,vector<pair<double,string>> &encoding_qu)
 {
     for(auto x:K)
     {
@@ -77,7 +77,7 @@ vector<Integer> compute_ESD(vector<pair<Integer,double>> &distlist1)
     return ESD;
 }
 
-vector<double> compute_D(SHE &she,pair<Integer,Integer> sk,vector<pair<Integer,double>> &distlist1,vector<Integer> &ESD)
+vector<double> compute_D(SHE &she,pair<Integer,Integer> sk,vector<double> &L,vector<Integer> &ESD)
 {
     vector<Integer> SD;
     for(auto x:ESD)
@@ -88,7 +88,7 @@ vector<double> compute_D(SHE &she,pair<Integer,Integer> sk,vector<pair<Integer,d
     vector<double> D;
     for(int i=0;i<SD.size();i++)
     {
-        D.push_back(Integer_to_double(SD[i])/distlist1[i].second);
+        D.push_back(Integer_to_double(SD[i])/L[i]);
     }
     return D;
 }

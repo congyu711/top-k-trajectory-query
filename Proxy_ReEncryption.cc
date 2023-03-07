@@ -36,6 +36,7 @@ public:
     Integer E,V,s;
     Capsule(Integer _E,Integer _V,Integer _s):
         E(_E),V(_V),s(_s){}
+    Capsule():E(Integer::Zero()),V(Integer::Zero()),s(Integer::Zero()){}
 };
 
 

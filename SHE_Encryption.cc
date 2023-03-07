@@ -7,7 +7,6 @@
 #include <crypto++/integer.h>
 #include <crypto++/osrng.h>
 #include <crypto++/nbtheory.h>
-// #include "function_declaration.h"
 using namespace std;
 using namespace CryptoPP;
 
