@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package QU_and_CS1;
+
+service Greeter {
+    // 请求加密公钥
+    rpc PublicKey (PublicKeyRequest) returns (PublicKeyReply) {} 
+
+    // 回复相似轨迹
+    rpc QUSearch (QURequest) returns (QUReply) {}
+}
+
+
+// QU向CS1请求公钥
+message PublicKeyRequest {
+    string name = 1;//QU发送自己的公钥
+}
+
+// 发送相似数k与加密后的编码轨迹
+message QURequest {
+    uint32 k = 1;
+    message qu_Enc {
+        double t = 2;
+        string Hpoint = 3;
+    }
+    repeated qu_Enc qu_Encs = 4;
+}
+
+//CS1向QU回复公钥（Integer）
+message PublicKeyReply {
+    string message = 1;//CS1回复自己的公钥
+}
+
+message QUReply {
+    message Cap {
+        string E = 1;
+        string V = 2;
+        string s = 3;
+    }
+    message Enc_Result {
+        repeated QURequest.qu_Enc query_result = 1;
+    }
+    string comversionKey = 1;
+    Cap cap = 2;
+    repeated string kid = 3;
+    repeated Enc_Result Enc_Results = 4;
+    repeated double D = 5;
+}
