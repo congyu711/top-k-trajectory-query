@@ -20,12 +20,17 @@ struct Phi
     pair<int,int> origin;
     char direcion;
     double gamma;
+    // Phi():order(0),origin(make_pair(0,0)),direcion('u'),gamma(0.0){}
+    Phi(){}
+    Phi(uint _order,int _x,int _y,char _direcion,double _gamma):
+    order(_order),origin(make_pair(_x,_y)),direcion(_direcion),gamma(_gamma){}
 };
 
 class ElGamal_keys
 {
 public:
     Integer privatekey,publickey,order,generator;
+    ElGamal_keys():privatekey(Integer::Zero()),publickey(Integer::Zero()),order(Integer::Zero()),generator(Integer::Zero()) {}
     ElGamal_keys(Integer _privatekey,Integer _publickey,Integer _order,Integer _gen):
         privatekey(_privatekey),publickey(_publickey),order(_order),generator(_gen){}
 };

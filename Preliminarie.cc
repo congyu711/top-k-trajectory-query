@@ -50,10 +50,10 @@ vector<Phi>  hilbertcurve_generator(uint order,int num)
     }
     else
     {
-        vector<Phi> list{
-            {N,{0,0},'u',1.0},{N,{N-1,0},'u',1.0},{N,{0,N-1},'d',1.0},{N,{N-1,N-1},'d',1.0},
-            {N,{N-1,0},'l',1.0},{N,{N-1,N-1},'l',1.0},{N,{0,0},'r',1.0},{N,{0,N-1},'r',1.0}
-        };
+        vector<Phi> list({
+            Phi(N,0,0,'u',1.0),Phi(N,N-1,0,'u',1.0),Phi(N,0,N-1,'d',1.0),Phi(N,N-1,N-1,'d',1.0),
+            Phi(N,N-1,0,'l',1.0),Phi(N,N-1,N-1,'l',1.0),Phi(N,0,0,'r',1.0),Phi(N,0,N-1,'r',1.0)
+        });
         vector<int> a = {0,1,2,3,4,5,6,7};
         random_shuffle(a.begin(),a.end());
         for(int i=0;i<num;i++)
