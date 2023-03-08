@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto"; // 需要处理
+
+package DO_CS1;
+
+service Greeter{
+    // 发送 必要信息
+    rpc SeedMessage (msg) returns (google.protobuf.Empty) {}
+    
+}
+message  track{
+    double  time =1;
+    string  hil = 2;
+}
+message encoding{
+    repeated  track encoded = 1;
+}
+message Capsule{
+    int32 x1 =1;
+    int32 x2 =2;
+    int32 x3 =3;
+}
+message enc_id{
+    //encrypted identity
+    repeated string enc_val =1;
+    Capsule  very_val =2;
+}
+
+
+message  msg{
+    message table_val{
+        repeated string  table_content =1;
+    }
+    map<string, table_val>  mapping_table = 1;  
+    repeated  encoding  encodingList  =2;
+    string rk =3;
+    enc_id  encryptedID = 4;
+}
+
+

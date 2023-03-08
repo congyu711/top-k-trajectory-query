@@ -1,3 +1,5 @@
+// server classes
+
 #include "Cryption_Code.cc"
 #include "Preliminarie.cc"
 #include "sort.cc"
@@ -5,6 +7,7 @@
 using namespace std;
 using namespace CryptoPP;
 
+class server_base
 class server_base
 {
 public:

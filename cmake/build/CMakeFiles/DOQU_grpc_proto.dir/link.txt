@@ -1,0 +1,2 @@
+/usr/bin/ar qc libDOQU_grpc_proto.a CMakeFiles/DOQU_grpc_proto.dir/DO_and_QU.grpc.pb.cc.o CMakeFiles/DOQU_grpc_proto.dir/DO_and_QU.pb.cc.o
+/usr/bin/ranlib libDOQU_grpc_proto.a
