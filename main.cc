@@ -1,3 +1,5 @@
+// server classes
+
 #include "Cryption_Code.cc"
 #include "Preliminarie.cc"
 #include "sort.cc"
@@ -5,20 +7,68 @@
 using namespace std;
 using namespace CryptoPP;
 
-class fullprocess
+class server_base
 {
 public:
-    const int a=10;
     Proxy_ReEncryption Pre_ReEnc;
     SHE she;
-    //bool exec(string datafile="data.txt");
-    bool DO();
-    bool QU();
-    bool CS1();
-    bool CS2();
+    uint N; // order of hilbert curve
+    int r; //number of curce;
+    // bool DO();
+    // bool QU();
+    // bool CS1();
+    // bool CS2();
 };
 
-bool fullprocess::DO() {
+//////////////////////////////////////////////////////////////////////////
+// TODO: some of definitions in this class should be moved to server_base.
+//////////////////////////////////////////////////////////////////////////
+class DataOwner: public server_base
+{
+public:
+
+    vector<Phi> phi_list;   // the return type of hilbertcurve_generator
+    string fileName;    // input file
+    ///////////////////////////////////////////////////////////////////
+    // TODO: use database!!!
+    vector<vector<Point>> trajectionList;   // list
+    vector<string> ID;                  // primary key in the database
+    ///////////////////////////////////////////////////////////////////
+    pair<Integer, Integer> she_sk;      // all keys are fixed
+    ElGamal_keys DO_key;
+    Integer QU_key_publickey;   // this should be received from QU;
+    map<string,vector<string>> dict;    // mapping table
+    vector<string> ciphertxt_Phi;       // encrypted hilbert curve para.s
+                                        // sent this to QU
+    vector<vector<pair<double,string>>> encodingList;
+    pair<vector<string>,Capsule> mess;
+    pair<Integer,Integer> conversion_key;
+
+    DataOwner(uint _N, int _r, string _filename):N(_N), r(_r), fileName(_filename){
+        ///////////////////////////////////////////
+        read_data(fileName, trajectionList);    // TODO: use real database!!!
+        ///////////////////////////////////////////
+
+        phi_list=hilbertcurve_generator(N,r);
+        vacuate(trajectionList);
+        she_sk=she.Key_Generation();
+        DO_key=Pre_ReEnc.ElGamal_key_generation();
+        // generate mapping table
+        mapping_table(trajectionList,phi_list,dict,she,she_sk);
+        database_encode(trajectionList,phi_list[0],encodingList);
+        
+    }
+    void encrypt_QUpubkey()
+    {
+        mess = Pre_ReEnc.Pre_Enc(ID,DO_key.privatekey,QU_key_publickey);
+        // generate ciphertxt_Phi
+        Phi_Enc(phi_list[0],ciphertxt_Phi,Pre_ReEnc,QU_key_publickey);
+        // generate conversion_key
+        conversion_key = Pre_ReEnc.Pre_ReKeyGen(DO_key.privatekey,QU_key_publickey);
+    }
+};
+
+bool server_base::DO() {
     //generate the parameter of hilbertcurve
     uint N = 3;//order of the curve
     int r=3;//the number of curve;
@@ -54,13 +104,18 @@ bool fullprocess::DO() {
 
     Phi_Enc(phi_list[0],ciphertxt_Phi,Pre_ReEnc,QU_key_publickey);//发送给QU
 
-    pair<Integer,Integer> comversion_key = Pre_ReEnc.Pre_ReKeyGen(DO_key.privatekey,QU_key_publickey);
+    pair<Integer,Integer> conversion_key = Pre_ReEnc.Pre_ReKeyGen(DO_key.privatekey,QU_key_publickey);
 
-    //send mapping_table(dict),encoding_trajectionList(encodingList) and encoding_ID(mess) comversion_key to cs1
+    //send mapping_table(dict),encoding_trajectionList(encodingList) and encoding_ID(mess) conversion_key to cs1
     return true;
 }
 
-bool fullprocess::QU() {
+class QueryUser: public server_base
+{
+
+};
+
+bool server_base::QU() {
     ElGamal_keys QU_key = Pre_ReEnc.ElGamal_key_generation();
     //send publicKey to DO and CS1
 
@@ -93,12 +148,12 @@ bool fullprocess::QU() {
 
     //send the qu_Enc and k to CS1
 
-    Integer comversion_key;//accept from CS1
+    Integer conversion_key;//accept from CS1
     Capsule cap;//accept from CS1
     vector<string> kid;//accept from CS1
     vector<vector<pair<double,string>>> Enc_result;//accept from CS1
 
-    Integer pri_key = Pre_ReEnc.Pre_ReCreateKey(QU_key.privatekey,QU_key.publickey,DO_key_publickey,cap,comversion_key);
+    Integer pri_key = Pre_ReEnc.Pre_ReCreateKey(QU_key.privatekey,QU_key.publickey,DO_key_publickey,cap,conversion_key);
     vector<string> txt_Dec = Pre_ReEnc.Pre_Decryption(pri_key,kid);
     vector<vector<pair<double,string>>> dec_result;
     for(auto a:Enc_result) {
@@ -119,7 +174,12 @@ bool fullprocess::QU() {
     return true;
 }
 
-bool fullprocess::CS1() {
+class CloudServer1: public server_base
+{
+
+};
+
+bool server_base::CS1() {
     ElGamal_keys CS1_key = Pre_ReEnc.ElGamal_key_generation(); 
 
     //accept from client
@@ -131,7 +191,7 @@ bool fullprocess::CS1() {
     map<string,vector<string>> dict;
     vector<vector<pair<double,string>>> encodingList;
     pair<vector<string>,Capsule> mess;
-    pair<Integer,Integer> comversion_key;
+    pair<Integer,Integer> conversion_key;
 
     //Decryp the qu_Dec
     vector<pair<double,string>> qu_Dec;
@@ -162,7 +222,7 @@ bool fullprocess::CS1() {
     vector<vector<pair<double,string>>> result_trajection;
     trajection_and_ID(encodingList,mess,K,ID_Topk,result_trajection,kid);
 
-    Capsule cap =  Pre_ReEnc.Pre_ReEncryption(comversion_key.first,mess.second);
+    Capsule cap =  Pre_ReEnc.Pre_ReEncryption(conversion_key.first,mess.second);
     vector<vector<pair<double,string>>> Enc_result;
     for(auto a:result_trajection) {
         vector<pair<double,string>> tmp;
@@ -174,7 +234,12 @@ bool fullprocess::CS1() {
     return true;
 }
 
-bool fullprocess::CS2() {
+class CloudServer2: public server_base
+{
+
+};
+
+bool server_base::CS2() {
     pair<Integer,Integer> sk;//accept from DO
     
     //accept from cs1
@@ -189,7 +254,7 @@ bool fullprocess::CS2() {
     return true;
 }
 
-int main() {
-    fullprocess test;
-    
-}
+// int main() {
+//     server_base test;
+//     cout<<test.she.k0<<endl;
+// }
