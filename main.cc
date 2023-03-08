@@ -8,7 +8,6 @@ using namespace std;
 using namespace CryptoPP;
 
 class server_base
-class server_base
 {
 public:
     Proxy_ReEncryption Pre_ReEnc;
