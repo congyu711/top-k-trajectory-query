@@ -1,0 +1,11 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto"; // 需要处理
+
+package DO_CS2;
+
+service Greeter{
+    rpc SeedMessage (SHE_pk) returns (google.protobuf.Empty) {}
+}
+message SHE_pk{
+    string sk = 1;
+}

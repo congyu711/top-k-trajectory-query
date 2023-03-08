@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+
+
+package CS1_CS2;
+
+
+service Greeter{
+    // 精确查询
+    rpc exactQuery( PreResults)  returns (ExactResult) {}
+
+}
+message  track_Sel{
+    double  dis =1;
+    int32  lable =2;
+}
+message synDist{
+    string  key =1;
+    double  dis = 2;
+}
+
+message PreResults {
+   int32 k = 1;
+   repeated string ESD =2;
+   repeated track_Sel KID =3;
+   repeated synDist distlist =4;
+}
+
+message ExactResult {
+    repeated track_Sel kid =1; //kid
+    repeated double mindis =2; //D
+}
+
