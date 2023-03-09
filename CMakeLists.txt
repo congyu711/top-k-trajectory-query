@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5.1)
 
 project(grpc_test C CXX)
 
-include(/home/congyu/grpc/examples/cpp/cmake/common.cmake)
+include(./common.cmake)
 
 # DOQU Proto file
 get_filename_component(DOQU_proto "./DO_and_QU.proto" ABSOLUTE)

@@ -1,2 +1,0 @@
-# Hashes of file build rules.
-6af4f40093699a2229d742dc158c0fde DO_and_QU.pb.cc

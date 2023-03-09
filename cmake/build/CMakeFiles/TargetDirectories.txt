@@ -1,5 +1,0 @@
-/home/congyu/Desktop/grpc_test/cmake/build/CMakeFiles/DOQU_grpc_proto.dir
-/home/congyu/Desktop/grpc_test/cmake/build/CMakeFiles/DOserver.dir
-/home/congyu/Desktop/grpc_test/cmake/build/CMakeFiles/QUclient.dir
-/home/congyu/Desktop/grpc_test/cmake/build/CMakeFiles/edit_cache.dir
-/home/congyu/Desktop/grpc_test/cmake/build/CMakeFiles/rebuild_cache.dir

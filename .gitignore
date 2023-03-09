@@ -6,3 +6,4 @@ examples/
 *.log
 test/
 !makefile
+cmake/build/
