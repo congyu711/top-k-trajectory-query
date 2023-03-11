@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-package QU_and_CS1;
+import "google/protobuf/empty.proto"; // 需要处理
+
+package CS1;
 
 service QUCS1_Greeter {
     // 请求加密公钥
@@ -8,8 +10,38 @@ service QUCS1_Greeter {
 
     // 回复相似轨迹
     rpc QUSearch (QURequest) returns (QUReply) {}
+
+    rpc SeedMessage (msg) returns (google.protobuf.Empty) {}
 }
 
+message  track{
+    double  time =1;
+    string  hil = 2;
+}
+message encoding{
+    repeated  track encoded = 1;
+}
+message Capsule{
+    string x1 =1;
+    string x2 =2;
+    string x3 =3;
+}
+message enc_id{
+    //encrypted identity
+    repeated string enc_val =1;
+    Capsule  very_val =2;
+}
+
+
+message  msg{
+    message table_val{
+        repeated string  table_content =1;
+    }
+    map<string, table_val>  mapping_table = 1;  
+    repeated  encoding  encodingList  =2;
+    string rk =3;
+    enc_id  encryptedID = 4;
+}
 
 // QU向CS1请求公钥
 message PublicKeyRequest {

@@ -33,6 +33,13 @@ class GreeterServiceImpl final: public CS1_CS2::CS1CS2_Greeter::Service {
         }
         return Status::OK;
     }
+
+    Status SeedMessage(ServerContext* context, const CS1_CS2::SHE_pk* request,
+                        google::protobuf::Empty* reply) override {
+        CS2.sk.first = Integer(request->sk1().c_str());
+        CS2.sk.first = Integer(request->sk2().c_str());
+        return Status::OK;
+    }
 };
 
 void RunServer() {

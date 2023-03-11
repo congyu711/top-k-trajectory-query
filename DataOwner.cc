@@ -8,8 +8,8 @@
 #include <grpcpp/health_check_service_interface.h>
 
 #include "./cmake/build/DO_and_QU.grpc.pb.h"
-#include "./cmake/build/DO_and_CS1.grpc.pb.h"
-#include "./cmake/build/DO_and_CS2.grpc.pb.h"
+#include "./cmake/build/CS1.grpc.pb.h"
+#include "./cmake/build/CS1_and_CS2.grpc.pb.h"
 
 typedef map<string,vector<string>> maptable;
 typedef vector<vector<pair<double,string>>> trajectorytype;
@@ -24,44 +24,48 @@ using grpc::ClientContext;
 using DO_and_QU::DOQU_Greeter;
 using DO_and_QU::ParameterReply;
 using DO_and_QU::PublicKeyRequest;
-using DO_CS1::DOCS1_Greeter;
-using DO_CS1::msg;
-using DO_CS2::DOCS2_Greeter;
-using DO_CS2::SHE_pk;
+using CS1::QUCS1_Greeter;
+using CS1::msg;
+using CS1_CS2::CS1CS2_Greeter;
+using CS1_CS2::SHE_pk;
 
 DataOwner DO(3,3,"data.txt");
 
 class DOCS1Client {
   public:
     DOCS1Client(std::shared_ptr<Channel> channel)
-    : stub_(DOCS1_Greeter::NewStub(channel)) {}
+    : stub_(QUCS1_Greeter::NewStub(channel)) {}
 
     std::string seedMessage(Integer conversionKey,maptable dict,trajectorytype trajectory,messagetype message) {
       msg request;
       request.set_rk(Integer_to_string(conversionKey));
+      std::cout<<"rk"<<"\n";
       for(auto x:dict) {
         for(auto y:x.second) {
           request.mutable_mapping_table()->at(x.first).add_table_content(y);
         }
       }
+      std::cout<<"dict"<<"\n";
       for(auto x:trajectory) {
         for(auto y:x) {
           request.add_encodinglist()->add_encoded()->set_time(y.first);
           request.add_encodinglist()->add_encoded()->set_hil(y.second);
         }
       }
+      std::cout<<"trajectory"<<"\n";
       for(auto x:message.first) {
         request.mutable_encryptedid()->add_enc_val(x);
       }
       request.mutable_encryptedid()->mutable_very_val()->set_x1(Integer_to_string(message.second.E));
-      request.mutable_encryptedid()->mutable_very_val()->set_x1(Integer_to_string(message.second.V));
-      request.mutable_encryptedid()->mutable_very_val()->set_x1(Integer_to_string(message.second.s));
-
+      request.mutable_encryptedid()->mutable_very_val()->set_x2(Integer_to_string(message.second.V));
+      request.mutable_encryptedid()->mutable_very_val()->set_x3(Integer_to_string(message.second.s));
+      std::cout<<"message"<<"\n";
       ClientContext context;
 
-      google::protobuf::Empty* reply;
+      google::protobuf::Empty reply;
 
-      Status status = stub_->SeedMessage(&context,request,reply);
+      Status status = stub_->SeedMessage(&context,request,&reply);
+      std::cout << "end send msg" <<"\n";
       if(status.ok()) {
         return "OK ";
       }
@@ -73,24 +77,25 @@ class DOCS1Client {
     }
   
   private:
-    std::unique_ptr<DOCS1_Greeter::Stub> stub_;
+    std::unique_ptr<QUCS1_Greeter::Stub> stub_;
 };
 
 class DOCS2_Client {
   public:
     DOCS2_Client(std::shared_ptr<Channel> channel)
-    : stub_(DOCS2_Greeter::NewStub(channel)) {}
+    : stub_(CS1CS2_Greeter::NewStub(channel)) {}
 
     std::string seedMessage() {
       SHE_pk request;
       request.set_sk1(Integer_to_string(DO.she_sk.first));
       request.set_sk2(Integer_to_string(DO.she_sk.second));
+      std::cout<<"SHE_sk"<<"\n";
 
-      google::protobuf::Empty* reply;
+      google::protobuf::Empty reply;
 
       ClientContext context;
 
-      Status status = stub_->SeedMessage(&context,request,reply);
+      Status status = stub_->SeedMessage(&context,request,&reply);
       if(status.ok()) {
         return "OK ";
       }
@@ -102,7 +107,7 @@ class DOCS2_Client {
     }
 
   private:
-    std::unique_ptr<DOCS2_Greeter::Stub> stub_;
+    std::unique_ptr<CS1CS2_Greeter::Stub> stub_;
 };
 
 // Logic and data behind the server's behavior.
@@ -134,6 +139,7 @@ void seedMsgTOCS2() {
 
 void seedMsgTOCS1() {
   DOCS1Client greeter(grpc::CreateChannel("localhost:50052",grpc::InsecureChannelCredentials()));
+  std::cout << "start seed msg"<< "\n";
   std::string reply = greeter.seedMessage(DO.conversion_key.first,DO.dict,DO.encodingList,DO.mess);
   std::cout << "Greeter received: " << reply << std::endl;
 }
@@ -160,27 +166,27 @@ void RunServer() {
 }
 
 int main(int argc, char** argv) {
-  std::string target_str;
-  std::string arg_str("--target");
-  if (argc > 1) {
-    std::string arg_val = argv[1];
-    size_t start_pos = arg_val.find(arg_str);
-    if (start_pos != std::string::npos) {
-      start_pos += arg_str.size();
-      if (arg_val[start_pos] == '=') {
-        target_str = arg_val.substr(start_pos + 1);
-      } else {
-        std::cout << "The only correct argument syntax is --target="
-                  << std::endl;
-        return 0;
-      }
-    } else {
-      std::cout << "The only acceptable argument is --target=" << std::endl;
-      return 0;
-    }
-  } else {
-    target_str = "localhost:50052";
-  }
+  // std::string target_str;
+  // std::string arg_str("--target");
+  // if (argc > 1) {
+  //   std::string arg_val = argv[1];
+  //   size_t start_pos = arg_val.find(arg_str);
+  //   if (start_pos != std::string::npos) {
+  //     start_pos += arg_str.size();
+  //     if (arg_val[start_pos] == '=') {
+  //       target_str = arg_val.substr(start_pos + 1);
+  //     } else {
+  //       std::cout << "The only correct argument syntax is --target="
+  //                 << std::endl;
+  //       return 0;
+  //     }
+  //   } else {
+  //     std::cout << "The only acceptable argument is --target=" << std::endl;
+  //     return 0;
+  //   }
+  // } else {
+  //   target_str = "localhost:50052";
+  // }
   seedMsgTOCS1();
   seedMsgTOCS2();
   RunServer();

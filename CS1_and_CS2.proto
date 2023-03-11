@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-
+import "google/protobuf/empty.proto";
 
 package CS1_CS2;
 
@@ -9,10 +9,16 @@ service CS1CS2_Greeter{
     // 精确查询
     rpc exactQuery( PreResults)  returns (ExactResult) {}
 
+    rpc SeedMessage (SHE_pk) returns (google.protobuf.Empty) {}
 }
 message  track_Sel{
     double  dis = 1;
     int32  lable =2;
+}
+
+message SHE_pk{
+    string sk1 = 1;
+    string sk2 = 2;
 }
 
 message PreResults {

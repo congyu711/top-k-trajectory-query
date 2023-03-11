@@ -11,7 +11,7 @@
 #include "./cmake/build/DO_and_QU.grpc.pb.h"
 #endif
 
-#include "./cmake/build/QU_and_CS1.grpc.pb.h"
+#include "./cmake/build/CS1.grpc.pb.h"
 
 typedef vector<pair<double,string>> searchQuery;
 
@@ -22,11 +22,11 @@ using DO_and_QU::DOQU_Greeter;
 using DO_and_QU::ParameterReply;
 using DO_and_QU::PublicKeyRequest;
 
-using QU_and_CS1::QUCS1_Greeter;
-using QU_and_CS1::PublicKeyReply;
-using QUCS1_PublicKeyRequest = QU_and_CS1::PublicKeyRequest;
-using QU_and_CS1::QUReply;
-using QU_and_CS1::QURequest;
+using CS1::QUCS1_Greeter;
+using CS1::PublicKeyReply;
+using QUCS1_PublicKeyRequest = CS1::PublicKeyRequest;
+using CS1::QUReply;
+using CS1::QURequest;
 
 QueryUser QU;
 

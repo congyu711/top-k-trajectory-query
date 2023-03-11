@@ -8,7 +8,7 @@ include(./common.cmake)
 get_filename_component(DOQU_proto "./DO_and_QU.proto" ABSOLUTE)
 get_filename_component(DOQU_proto_path "${DOQU_proto}" PATH)
 # QUCS1 Proto file
-get_filename_component(QUCS1_proto "./QU_and_CS1.proto" ABSOLUTE)
+get_filename_component(QUCS1_proto "./CS1.proto" ABSOLUTE)
 # get_filename_component(QUCS1_proto_path "${QUCS1_proto}" PATH)
 # DOCS2 Proto file
 get_filename_component(DOCS2_proto "./DO_and_CS2.proto" ABSOLUTE)
@@ -28,10 +28,10 @@ set(DOQU_proto_hdrs "${CMAKE_CURRENT_BINARY_DIR}/DO_and_QU.pb.h")
 set(DOQU_grpc_srcs "${CMAKE_CURRENT_BINARY_DIR}/DO_and_QU.grpc.pb.cc")
 set(DOQU_grpc_hdrs "${CMAKE_CURRENT_BINARY_DIR}/DO_and_QU.grpc.pb.h")
 
-set(QUCS1_proto_srcs "${CMAKE_CURRENT_BINARY_DIR}/QU_and_CS1.pb.cc")
-set(QUCS1_proto_hdrs "${CMAKE_CURRENT_BINARY_DIR}/QU_and_CS1.pb.h")
-set(QUCS1_grpc_srcs "${CMAKE_CURRENT_BINARY_DIR}/QU_and_CS1.grpc.pb.cc")
-set(QUCS1_grpc_hdrs "${CMAKE_CURRENT_BINARY_DIR}/QU_and_CS1.grpc.pb.h")
+set(QUCS1_proto_srcs "${CMAKE_CURRENT_BINARY_DIR}/CS1.pb.cc")
+set(QUCS1_proto_hdrs "${CMAKE_CURRENT_BINARY_DIR}/CS1.pb.h")
+set(QUCS1_grpc_srcs "${CMAKE_CURRENT_BINARY_DIR}/CS1.grpc.pb.cc")
+set(QUCS1_grpc_hdrs "${CMAKE_CURRENT_BINARY_DIR}/CS1.grpc.pb.h")
 
 set(DOCS2_proto_srcs "${CMAKE_CURRENT_BINARY_DIR}/DO_and_CS2.pb.cc")
 set(DOCS2_proto_hdrs "${CMAKE_CURRENT_BINARY_DIR}/DO_and_CS2.pb.h")
