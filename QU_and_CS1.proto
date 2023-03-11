@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package QU_and_CS1;
 
-service Greeter {
+service QUCS1_Greeter {
     // 请求加密公钥
     rpc PublicKey (PublicKeyRequest) returns (PublicKeyReply) {} 
 
@@ -40,7 +40,6 @@ message QUReply {
     message Enc_Result {
         repeated QURequest.qu_Enc query_result = 1;
     }
-    string comversionKey = 1;
     Cap cap = 2;
     repeated string kid = 3;
     repeated Enc_Result Enc_Results = 4;

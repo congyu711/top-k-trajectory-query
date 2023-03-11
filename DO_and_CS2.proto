@@ -3,9 +3,10 @@ import "google/protobuf/empty.proto"; // 需要处理
 
 package DO_CS2;
 
-service Greeter{
+service DOCS2_Greeter{
     rpc SeedMessage (SHE_pk) returns (google.protobuf.Empty) {}
 }
 message SHE_pk{
-    string sk = 1;
+    string sk1 = 1;
+    string sk2 = 2;
 }

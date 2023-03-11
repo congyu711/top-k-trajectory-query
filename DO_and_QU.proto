@@ -3,7 +3,7 @@ syntax = "proto3";
 package DO_and_QU;
 
 // The greeting service definition.
-service Greeter {
+service DOQU_Greeter {
   rpc PublicKey (PublicKeyRequest) returns (ParameterReply) {}
 }
 
@@ -15,4 +15,5 @@ message PublicKeyRequest {
 // DO向QU发送加密的希尔伯特曲线参数（vector<string>）
 message ParameterReply {
   repeated string parameter = 1;
+  string conversionKey = 2;
 }

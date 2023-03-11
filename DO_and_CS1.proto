@@ -4,10 +4,9 @@ import "google/protobuf/empty.proto"; // 需要处理
 
 package DO_CS1;
 
-service Greeter{
+service DOCS1_Greeter{
     // 发送 必要信息
     rpc SeedMessage (msg) returns (google.protobuf.Empty) {}
-    
 }
 message  track{
     double  time =1;
@@ -17,9 +16,9 @@ message encoding{
     repeated  track encoded = 1;
 }
 message Capsule{
-    int32 x1 =1;
-    int32 x2 =2;
-    int32 x3 =3;
+    string x1 =1;
+    string x2 =2;
+    string x3 =3;
 }
 message enc_id{
     //encrypted identity

@@ -102,6 +102,7 @@ public:
     }
 
     void Encrypt_Query() {
+        Encode_Query();
         Elgamal_Enc(encoding_qu,Pre_ReEnc,qu_Enc,CS1_key_publickey);
     }
 
@@ -192,17 +193,18 @@ public:
     vector<double> L;//accept from CS1
     vector<Integer> ESD;//accept from CS1
     vector<double> D;//send this to CS1
-    vector<pair<double,int>> k;//send this to CS1
+    vector<pair<double,int>> kid;//send this to CS1
+    int k;
 
     void Topk() {
         D = compute_D(she,sk,L,ESD);
-        top_K(3,D,k);
+        top_K(k,D,kid);
     }
 };
 
-int main() {
-    DataOwner(3,3,"data.txt");
-    QueryUser();
-    CloudServer1();
-    CloudServer2();
-}   
+// int main() {
+//     DataOwner(3,3,"data.txt");
+//     QueryUser();
+//     CloudServer1();
+//     CloudServer2();
+// }   

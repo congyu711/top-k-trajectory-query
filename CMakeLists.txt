@@ -77,13 +77,62 @@ target_link_libraries(DOQU_grpc_proto
   ${_GRPC_GRPCPP}
   ${_PROTOBUF_LIBPROTOBUF})
 
+# DOCS1_grpc_proto
+add_library(DOCS1_grpc_proto
+  ${DOCS1_grpc_srcs}
+  ${DOCS1_grpc_hdrs}
+  ${DOCS1_proto_srcs}
+  ${DOCS1_proto_hdrs})
+target_link_libraries(DOCS1_grpc_proto
+  ${_REFLECTION}
+  ${_GRPC_GRPCPP}
+  ${_PROTOBUF_LIBPROTOBUF})
+
+# DOCS2_grpc_proto
+add_library(DOCS2_grpc_proto
+  ${DOCS2_grpc_srcs}
+  ${DOCS2_grpc_hdrs}
+  ${DOCS2_proto_srcs}
+  ${DOCS2_proto_hdrs})
+target_link_libraries(DOCS2_grpc_proto
+  ${_REFLECTION}
+  ${_GRPC_GRPCPP}
+  ${_PROTOBUF_LIBPROTOBUF})
+
+# QUCS1_grpc_proto
+add_library(QUCS1_grpc_proto
+  ${QUCS1_grpc_srcs}
+  ${QUCS1_grpc_hdrs}
+  ${QUCS1_proto_srcs}
+  ${QUCS1_proto_hdrs})
+target_link_libraries(QUCS1_grpc_proto
+  ${_REFLECTION}
+  ${_GRPC_GRPCPP}
+  ${_PROTOBUF_LIBPROTOBUF})
+
+# CS1CS2_grpc_proto
+add_library(CS1CS2_grpc_proto
+  ${CS1CS2_grpc_srcs}
+  ${CS1CS2_grpc_hdrs}
+  ${CS1CS2_proto_srcs}
+  ${CS1CS2_proto_hdrs})
+target_link_libraries(CS1CS2_grpc_proto
+  ${_REFLECTION}
+  ${_GRPC_GRPCPP}
+  ${_PROTOBUF_LIBPROTOBUF})
+  
 # Targets greeter_[async_](client|server)
 foreach(_target
-  DOserver QUclient)
+  DataOwner QueryUser CloudServer1 CloudServer2)
   add_executable(${_target} "${_target}.cc")
   target_link_libraries(${_target}
     DOQU_grpc_proto
+    DOCS1_grpc_proto
+    DOCS2_grpc_proto
+    CS1CS2_grpc_proto
+    QUCS1_grpc_proto
     ${_REFLECTION}
     ${_GRPC_GRPCPP}
-    ${_PROTOBUF_LIBPROTOBUF})
+    ${_PROTOBUF_LIBPROTOBUF}
+    cryptopp)
 endforeach()

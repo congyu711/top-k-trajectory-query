@@ -1,45 +1,42 @@
-
+#include "main.cc"
 #include <iostream>
 #include <memory>
 #include <string>
 
-#include <grpcpp/ext/proto_server_reflection_plugin.h>
 #include <grpcpp/grpcpp.h>
+#include <grpcpp/ext/proto_server_reflection_plugin.h>
 #include <grpcpp/health_check_service_interface.h>
-
-#ifdef BAZEL_BUILD
-#include "examples/protos/helloworld.grpc.pb.h"
-#else
-#include "./cmake/build/DO_and_QU.grpc.pb.h"
-#endif
+#include "./cmake/build/CS1_and_CS2.grpc.pb.h"
 
 using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
 using grpc::Status;
-// using helloworld::Greeter;
-// using helloworld::HelloReply;
-// using helloworld::HelloRequest;
-using DO_and_QU::DOQU_Greeter;
-using DO_and_QU::ParameterReply;
-using DO_and_QU::PublicKeyRequest;
+using grpc::Channel;
 
-// Logic and data behind the server's behavior.
-class GreeterServiceImpl final : public DOQU_Greeter::Service {
-  Status PublicKey(ServerContext* context, const PublicKeyRequest* request,
-                  ParameterReply* reply) override {
+CloudServer2 CS2;
 
-    // repeated string
-    // reply->set_parameter(prefix + request->publickey());
-    reply->add_parameter("1114514\n");
-    reply->add_parameter("1919810\n");
-    reply->add_parameter("Ahhhhh!!!!!\n");
-    return Status::OK;
-  }
+class GreeterServiceImpl final: public CS1_CS2::CS1CS2_Greeter::Service {
+    Status exactQuery(ServerContext* context, const CS1_CS2::PreResults* request,
+                CS1_CS2::ExactResult* reply) override {
+        CS2.k = request->k();
+        for(auto x:request->esd()) {
+            CS2.ESD.push_back(Integer(x.c_str()));
+        }
+        for(auto x:request->timelist()) {
+            CS2.L.push_back(x);
+        }
+        CS2.Topk();
+        for(auto x:CS2.kid) {
+            reply->add_kid()->set_dis(x.first);
+            reply->add_kid()->set_lable(x.second);
+        }
+        return Status::OK;
+    }
 };
 
 void RunServer() {
-  std::string server_address("0.0.0.0:50051");
+  std::string server_address("0.0.0.0:50053");
   GreeterServiceImpl service;
 
   grpc::EnableDefaultHealthCheckService(true);
@@ -59,8 +56,7 @@ void RunServer() {
   server->Wait();
 }
 
-int main(int argc, char** argv) {
-  RunServer();
-
-  return 0;
+int main() {
+    RunServer();
+    return 0;
 }

@@ -8,7 +8,7 @@
 #ifdef BAZEL_BUILD
 #include "examples/protos/helloworld.grpc.pb.h"
 #else
-#include "DO_and_QU.grpc.pb.h"
+#include "./cmake/build/DO_and_QU.grpc.pb.h"
 #endif
 
 using grpc::Channel;
@@ -94,8 +94,6 @@ int main(int argc, char** argv) {
       grpc::CreateChannel(target_str, grpc::InsecureChannelCredentials()));
   std::string user("world");
   std::string reply = greeter.PublicKey(user);
-  std::cout << "Greeter received: " << reply << std::endl;
-
-  
+  std::cout << "Greeter received: " << reply << std::endl;  
   return 0;
 }
