@@ -29,7 +29,7 @@ using CS1::msg;
 using CS1_CS2::CS1CS2_Greeter;
 using CS1_CS2::SHE_pk;
 
-DataOwner DO(3,3,"data.txt");
+DataOwner DO(3,3,"/home/qinghj/top-k-trajectory-query/data.txt");
 
 class DOCS1Client {
   public:
@@ -39,13 +39,18 @@ class DOCS1Client {
     std::string seedMessage(Integer conversionKey,maptable dict,trajectorytype trajectory,messagetype message) {
       msg request;
       request.set_rk(Integer_to_string(conversionKey));
-      std::cout<<"rk"<<"\n";
+      std::cout<<"rk = "<<conversionKey<<"\n";
       for(auto x:dict) {
+        CS1::msg_table_val tmp;
         for(auto y:x.second) {
-          request.mutable_mapping_table()->at(x.first).add_table_content(y);
+          tmp.add_table_content(y);
         }
+        request.mutable_mapping_table()->insert({x.first,tmp});
       }
+      // google::protobuf::Map<string,CS1::msg_table_val> tmp(DO.dict.begin(),DO.dict.end());
+      // *(request.mutable_mapping_table()) = tmp;
       std::cout<<"dict"<<"\n";
+      if(DO.dict.empty()) cout<<"dict is empty"<<"\n";
       for(auto x:trajectory) {
         for(auto y:x) {
           request.add_encodinglist()->add_encoded()->set_time(y.first);
@@ -53,6 +58,7 @@ class DOCS1Client {
         }
       }
       std::cout<<"trajectory"<<"\n";
+      if(DO.trajectionList.empty()) cout<<"dict is empty"<<"\n";
       for(auto x:message.first) {
         request.mutable_encryptedid()->add_enc_val(x);
       }
@@ -89,7 +95,7 @@ class DOCS2_Client {
       SHE_pk request;
       request.set_sk1(Integer_to_string(DO.she_sk.first));
       request.set_sk2(Integer_to_string(DO.she_sk.second));
-      std::cout<<"SHE_sk"<<"\n";
+      std::cout<<"SHE_sk"<<DO.she_sk.first<<" "<<DO.she_sk.second<<"\n";
 
       google::protobuf::Empty reply;
 
@@ -194,8 +200,8 @@ int main(int argc, char** argv) {
   // } else {
   //   target_str = "localhost:50052";
   // }
-  // seedMsgTOCS1();
-  // seedMsgTOCS2();
+  seedMsgTOCS1();
+  seedMsgTOCS2();
   RunServer();
   return 0;
 }

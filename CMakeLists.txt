@@ -23,6 +23,7 @@ get_filename_component(CS1CS2_proto "./CS1_and_CS2.proto" ABSOLUTE)
 
 
 # Generated sources
+set(CMAKE_BUILD_TYPE "Debug")
 set(DOQU_proto_srcs "${CMAKE_CURRENT_BINARY_DIR}/DO_and_QU.pb.cc")
 set(DOQU_proto_hdrs "${CMAKE_CURRENT_BINARY_DIR}/DO_and_QU.pb.h")
 set(DOQU_grpc_srcs "${CMAKE_CURRENT_BINARY_DIR}/DO_and_QU.grpc.pb.cc")

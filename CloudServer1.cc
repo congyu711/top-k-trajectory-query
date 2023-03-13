@@ -27,13 +27,17 @@ class CS1CS2_Client {
         std::string exactQuery() {
             CS1_CS2::PreResults request;
             request.set_k(CS.k);
+            std::cout<<"k = "<<CS.k<<"\n";
             for(auto x:CS.ESD) {
                 request.add_esd(Integer_to_string(x));
             }
+            std::cout<<"ESD"<<"\n";
+            if(CS.ESD.empty()) cout<<"ESD is empty"<<"\n";
             for(auto x:CS.L) {
                 request.add_timelist(x);
             }
-
+            std::cout<<"timeList"<<"\n";
+            if(CS.L.empty()) cout<<"L is empty"<<"\n";
             CS1_CS2::ExactResult reply;
             ClientContext context;
             Status status = stub_->exactQuery(&context,request,&reply);
@@ -44,6 +48,8 @@ class CS1CS2_Client {
                     tmp.push_back(make_pair(x.dis(),x.lable()));
                 }
                 CS.kid = tmp;
+                std::cout<<"kid"<<"\n";
+                if(CS.kid.empty()) cout<<"kid is empty"<<"\n";
                 return "OK ";
             }
             else {
@@ -59,6 +65,7 @@ class GreeterServiceImpl final : public CS1::QUCS1_Greeter::Service{
     grpc::Status PublicKey(ServerContext* context, const CS1::PublicKeyRequest* request,
                 CS1::PublicKeyReply* reply) override {
         CS.QU_key_publicKey = Integer(request->name().c_str());
+        std::cout<<"set_QUpublicKey = "<<CS.QU_key_publicKey<<"\n";
         reply->set_message(Integer_to_string(CS.CS1_key.publickey));
         return Status::OK;
     }
@@ -66,7 +73,7 @@ class GreeterServiceImpl final : public CS1::QUCS1_Greeter::Service{
     grpc::Status SeedMessage(ServerContext* context, const CS1::msg* request,
                 google::protobuf::Empty* reply) override {
         CS.conversion_key = Integer(request->rk().c_str());
-        std::cout<<"SK"<<"\n";
+        std::cout<<"SK = "<<CS.conversion_key<<"\n";
         for(auto x:request->mapping_table()) {
             vector<string> tmp;
             for(auto y:x.second.table_content()) {
@@ -75,6 +82,7 @@ class GreeterServiceImpl final : public CS1::QUCS1_Greeter::Service{
             CS.dict[x.first] = tmp;
         }
         std::cout<< "mapping_table"<<"\n";
+        if(CS.dict.empty()) cout<<"mapping_table is empty"<<"\n";
         for(auto x:request->encodinglist()) {
             vector<pair<double,string>> tmp;
             for(auto y:x.encoded()) {
@@ -83,6 +91,7 @@ class GreeterServiceImpl final : public CS1::QUCS1_Greeter::Service{
             CS.encodingList.push_back(tmp);
         }
         std::cout<< "encodingList"<<"\n";
+        if(CS.encodingList.empty()) cout<<"encodingList is empty"<<"\n";
         CS.mess.second = Capsule(Integer(request->encryptedid().very_val().x1().c_str()),
         Integer(request->encryptedid().very_val().x2().c_str()),
         Integer(request->encryptedid().very_val().x3().c_str()));
@@ -97,15 +106,25 @@ class GreeterServiceImpl final : public CS1::QUCS1_Greeter::Service{
     grpc::Status QUSearch(ServerContext* context, const CS1::QURequest* request,
                 CS1::QUReply* reply) override {
         CS.k = request->k();
+        std::cout<<"k = "<<CS.k<<"\n";
         vector<std::pair<double, std::string>> tmp;
         for(auto x:request->qu_encs()) {
             tmp.push_back(make_pair(x.t(),x.hpoint()));
         }
+        std::cout<<"qu_enc"<<"\n";
         CS.qu_Enc = tmp;
+        for(auto x:CS.qu_Enc) {
+            printstring(x.second);
+        }
+        if(CS.qu_Enc.empty()) cout<<"qu_enc is empty"<<"\n";
         CS.Decrypt_Query();
+        cout<<1<<"\n";
         CS.Compute_ApproximateDistance();
+        cout<<2<<"\n";
         CS.firstTopK();
+        cout<<3<<"\n";
         CS.Compute_ESD();
+        std::cout<<"seed message to CS2"<<"\n";
         CS1CS2_Client greeter(grpc::CreateChannel("localhost:50053",grpc::InsecureChannelCredentials()));
         greeter.exactQuery();
         CS.Encrypt_Result();
@@ -113,15 +132,18 @@ class GreeterServiceImpl final : public CS1::QUCS1_Greeter::Service{
         reply->mutable_cap()->set_e(Integer_to_string(CS.cap.E));
         reply->mutable_cap()->set_v(Integer_to_string(CS.cap.V));
         reply->mutable_cap()->set_s(Integer_to_string(CS.cap.s));
+        std::cout<<"reply from CS2"<<"\n";
         for(auto x:CS.ID_Topk) {
             reply->add_kid(x);
         }
+        std::cout<<"kid"<<"\n";
         for(auto x:CS.Enc_result) {
             for(auto y:x) {
                 reply->add_enc_results()->add_query_result()->set_t(y.first);
                 reply->add_enc_results()->add_query_result()->set_hpoint(y.second);
             }
         }
+        std::cout<<"Enc_result"<<"\n";
         for(auto x:CS.K) {
             reply->add_d(x.first);
         }

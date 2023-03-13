@@ -43,35 +43,45 @@ void Elgamal_Enc(vector<pair<double,string>> &qurey,Proxy_ReEncryption &Pre_ReEn
 void Phi_Dec(vector<string> cipher_txt,Proxy_ReEncryption &Pre_ReEnc,vector<string> &phi_dec,Integer privatekey)
 {
     string tmp;
+    vector<string> tmp1;
     string order = cipher_txt[0];
     string origin1 = cipher_txt[1];
     string origin2 = cipher_txt[2];
     string direction = cipher_txt[3];
     string gamma = cipher_txt[4];
     Pre_ReEnc.ElGamal_Decryption(order,tmp,privatekey);
-    phi_dec.push_back(tmp);
+    tmp1.push_back(tmp);
     tmp.clear();
     Pre_ReEnc.ElGamal_Decryption(origin1,tmp,privatekey);
-    phi_dec.push_back(tmp);
+    tmp1.push_back(tmp);
     tmp.clear();
     Pre_ReEnc.ElGamal_Decryption(origin2,tmp,privatekey);
-    phi_dec.push_back(tmp);
+    tmp1.push_back(tmp);
     tmp.clear();
     Pre_ReEnc.ElGamal_Decryption(direction,tmp,privatekey);
-    phi_dec.push_back(tmp);
+    tmp1.push_back(tmp);
     tmp.clear();
     Pre_ReEnc.ElGamal_Decryption(gamma,tmp,privatekey);
-    phi_dec.push_back(tmp);
+    tmp1.push_back(tmp);
+    phi_dec = tmp1;
 }
 
-void Elgamal_Dec(vector<pair<double,string>> &cipher_txt,Proxy_ReEncryption &Pre_ReEnc,vector<pair<double,string>> &dec_txt,Integer privatekey)
+void Elgamal_Dec(const vector<pair<double,string>> &cipher_txt,Proxy_ReEncryption &Pre_ReEnc,vector<pair<double,string>> &dec_txt,Integer privatekey)
 {
     vector<pair<double,string>> tmp1;
+    cout<<1<<"\n";
+    for(auto x:cipher_txt) {
+        printstring(x.second);
+    }
+    cout<<2<<"\n";
     for(auto a:cipher_txt)
     {   
         string tmp;
+        cout<<"privatekey = "<<privatekey<<endl;
+        printstring(a.second);
         Pre_ReEnc.ElGamal_Decryption(a.second,tmp,privatekey);
         tmp1.push_back(make_pair(a.first,tmp));
+        cout<<a.first<<" "<<tmp<<"\n";
     }
     dec_txt = tmp1;
 }
@@ -93,6 +103,7 @@ void database_encode(vector<vector<Point>> &trajectionList,Phi phi,vector<vector
 void decode(vector<vector<Point>> &trajectionList,Phi phi,vector<vector<pair<double,string>>> &encodingList)
 {
     hilbertcurve hc({phi.order,phi.origin,phi.direcion,phi.gamma});
+    vector<vector<Point>> tmp1;
     for(auto a:encodingList)
     {
         vector<Point> tmp;
@@ -101,8 +112,9 @@ void decode(vector<vector<Point>> &trajectionList,Phi phi,vector<vector<pair<dou
             pair<uint,uint> x = hc.H2xy[b.second];
             tmp.push_back({b.first,(double) x.first,(double) x.second});
         }
-        trajectionList.push_back(tmp);
+        tmp1.push_back(tmp);
     }
+    trajectionList = tmp1;
 }
 
 void query_encode(vector<Point> &trajectionList,Phi phi,vector<pair<double,string>> &encodingList)

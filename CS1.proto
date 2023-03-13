@@ -53,7 +53,7 @@ message QURequest {
     uint32 k = 1;
     message qu_Enc {
         double t = 2;
-        string Hpoint = 3;
+        bytes Hpoint = 3;
     }
     repeated qu_Enc qu_Encs = 4;
 }

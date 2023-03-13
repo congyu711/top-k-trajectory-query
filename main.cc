@@ -81,9 +81,10 @@ public:
     vector<pair<double,string>> encoding_qu;//encode the query
     vector<string> txt_Dec; //Proxy_Encryption: decrypt by reCreateKey
     Integer reCreateKey; //Proxy_Encryption generate the reCreateKey
-    vector<vector<pair<double,string>>> dec_result;
+    vector<vector<Point>> dec_result;
 
     QueryUser() {
+        search_qu = {Point(0.0,1,1),Point(1.0,2,2),Point(2.0,3,3)};
         QU_key = Pre_ReEnc.ElGamal_key_generation();//generate the ElGamal_key(PubKey and PrivateKey) for QU
     }
 
@@ -112,11 +113,13 @@ public:
     }
 
     void Decrypt_Result() {
+        vector<vector<pair<double,string>>> tmp1;
         for(auto a:Enc_result) {
             vector<pair<double,string>> tmp;
             Elgamal_Dec(a,Pre_ReEnc,tmp,QU_key.privatekey);
-            dec_result.push_back(tmp);
+            tmp1.push_back(tmp);
         }
+        decode(dec_result,phi,tmp1);
     }
 };
 
@@ -149,6 +152,10 @@ public:
     }
 
     void Decrypt_Query() {
+        if(qu_Enc.empty()) cout<<"qu_Enc is empty"<<"\n";
+        // for(auto x:qu_Enc) {
+        //     cout<<x.first<<" "<<x.second<<"\n";
+        // }
         Elgamal_Dec(qu_Enc,Pre_ReEnc,qu_Dec,CS1_key.privatekey);
     }
 
@@ -176,7 +183,7 @@ public:
 
     void Encrypt_Result() {
         trajection_and_ID(encodingList,mess,K,ID_Topk,result_trajection,kid);
-        vector<searchQuery> tmp1;
+        vector<vector<pair<double,string>>> tmp1;
         for(auto a:result_trajection) {
             vector<pair<double,string>> tmp;
             Elgamal_Enc(a,Pre_ReEnc,tmp,QU_key_publicKey);
@@ -208,15 +215,17 @@ public:
 
 // int main() {
 //     DataOwner Do(3,3,"data.txt");
-//     QueryUser Qu;
+//     // QueryUser Qu;
 //     // CloudServer1();
 //     // CloudServer2();
-//     Do.QU_key_publickey = Qu.QU_key.publickey;
-//     Do.encrypt_QUpubkey();
-//     Qu.ciphertxt_Phi = Do.ciphertxt_Phi;
-//     Qu.decrypt_Phi();
-//     for(auto x:Qu.phi_dec) {
-//         cout<<x<<"\n";
-//     }
+//     // Do.QU_key_publickey = Qu.QU_key.publickey;
+//     // Do.encrypt_QUpubkey();
+//     // Qu.ciphertxt_Phi = Do.ciphertxt_Phi;
+//     // Qu.decrypt_Phi();
+//     // for(auto x:Qu.phi_dec) {
+//     //     cout<<x<<"\n";
+//     // }
+//     if(Do.dict.empty()) cout<<"dict is empty"<<endl;
+//     if(Do.encodingList.empty()) cout<<"encodingList is empty"<<endl;
 //     return 0;
 // }   

@@ -104,7 +104,10 @@ void Proxy_ReEncryption::ElGamal_Decryption(string &cipher_txt,string &decryptio
     ElGamal::Decryptor d0;
     d0.AccessKey().AccessGroupParameters().Initialize(g);
     d0.AccessKey().SetPrivateExponent(privatekey);
+    cout<<3<<"\n";
+    printstring(cipher_txt);
     StringSource ss(cipher_txt,true,new PK_DecryptorFilter(prng,d0,new StringSink(decryption_txt)));
+    cout<<decryption_txt<<"\n";
 }
 
 //generate (public_key,private_Key)

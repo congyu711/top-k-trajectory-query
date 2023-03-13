@@ -38,7 +38,7 @@ class QUCS1Client {
     std::string PublicKey(const std::string& publicKey) {
         QUCS1_PublicKeyRequest request;
         request.set_name(publicKey);
-
+        std::cout<<"set_QUpublicKey"<<"\n";
         PublicKeyReply reply;
 
         ClientContext context;
@@ -48,6 +48,7 @@ class QUCS1Client {
         if (status.ok()) {
         // std::string str=reply.SerializeAsString();
             QU.CS1_key_publickey = Integer(reply.message().c_str());
+            std::cout<<"reply_CS1publicKey"<<"\n";
             return "OK";
         } else {
             std::cout << status.error_code() << ": " << status.error_message()
@@ -59,29 +60,51 @@ class QUCS1Client {
     std::string QUSearch(int k,searchQuery &qu) {
         QURequest request;
         request.set_k(k);
+        std::cout<<"k = "<<k<<"\n";
+        vector<CS1::QURequest_qu_Enc> tmp;
         for(auto x:qu) {
-            request.add_qu_encs()->set_t(x.first);
-            request.add_qu_encs()->set_hpoint(x.second);
+          CS1::QURequest_qu_Enc tmp1;
+          tmp1.set_t(x.first);
+          tmp1.set_hpoint(x.second);
+            // request.add_qu_encs()->set_t(x.first);
+            // request.add_qu_encs()->set_hpoint(x.second);
+          tmp.push_back(tmp1);
         }
+        request.mutable_qu_encs()->CopyFrom({tmp.begin(),tmp.end()});
+        std::cout<<"qu"<<"\n";
         QUReply reply;
         ClientContext context;
         Status status = stub_->QUSearch(&context,request,&reply);
 
         if(status.ok()) {
             QU.cap = Capsule(Integer(reply.cap().e().c_str()),Integer(reply.cap().v().c_str()),Integer(reply.cap().s().c_str()));
+            cout<<"cap"<<"\n";
             vector<string> tmp;
             for(auto x:reply.kid()) {
                 tmp.push_back(x);
             }
             QU.kid = tmp;
+            std::cout<<"kid"<<"\n";
+            vector<vector<pair<double, string>>> tmp1;
+            for(auto x:reply.enc_results()) {
+              vector<pair<double,string>> tmp;
+              for(auto y:x.query_result()) {
+                tmp.push_back(make_pair(y.t(),y.hpoint()));
+                cout<<y.t()<<" "<<y.hpoint()<<"\n";
+              }
+              tmp1.push_back(tmp);
+            }
+            if(tmp1.empty()) cout<<"tmp1 is empty"<<endl;
+            QU.Enc_result = tmp1;
+            cout<<"Enc_result"<<"\n";
             return "OK";
-        }
-        else {
+          }
+          else {
             std::cout << status.error_code() << ": " << status.error_message()
-                << std::endl;
-            return "RPC failed";
-        }
-    }
+                      << std::endl;
+                   return "RPC failed";
+           }
+      }
 
     private:
         std::unique_ptr<QUCS1_Greeter::Stub> stub_;
@@ -98,7 +121,7 @@ class GreeterClient {
     // Data we are sending to the server.
     PublicKeyRequest request;
     request.set_publickey(publicKey);
-    std::cout <<"publicKey"<<"\n";
+    std::cout <<"set_QUpublicKey"<<"\n";
     // Container for the data we expect from the server.
     ParameterReply reply;
 
@@ -180,9 +203,19 @@ int main(int argc, char** argv) {
 
   QU.Encrypt_Query();
   std::string reply2 = greeter1.QUSearch(3,QU.qu_Enc);
-  
+  std::cout << "Greeter1 received: " << reply2 << std::endl;
   QU.Decrypt_ID();
   QU.Decrypt_Result();
-
+  if(QU.Enc_result.empty()) cout<<"Enc_result is empty";
+  if(!QU.dec_result.empty()) {
+    for(auto x:QU.dec_result) {
+      for(auto y:x) {
+        cout<<y.time<<" "<<y.x<<" "<<y.y<<" ";
+      }
+      cout<<"\n";
+    }
+  } else {
+    cout<<"empty"<<endl;
+  }                                           
   return 0;
 }
