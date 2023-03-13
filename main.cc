@@ -167,18 +167,22 @@ public:
     void Compute_ESD() {
         Compute_Distance();
         ESD = compute_ESD(distanceList1);
+        vector<double> tmp;
         for(auto x:distanceList1) {
-            L.push_back(x.second);
+            tmp.push_back(x.second);
         }
+        L = tmp;
     }
 
     void Encrypt_Result() {
         trajection_and_ID(encodingList,mess,K,ID_Topk,result_trajection,kid);
+        vector<searchQuery> tmp1;
         for(auto a:result_trajection) {
             vector<pair<double,string>> tmp;
             Elgamal_Enc(a,Pre_ReEnc,tmp,QU_key_publicKey);
-            Enc_result.push_back(tmp);
+            tmp1.push_back(tmp);
         }
+        Enc_result = tmp1;
     }
 
     void Pre_ReEncryption() {
@@ -203,8 +207,16 @@ public:
 };
 
 // int main() {
-//     DataOwner(3,3,"data.txt");
-//     QueryUser();
-//     CloudServer1();
-//     CloudServer2();
+//     DataOwner Do(3,3,"data.txt");
+//     QueryUser Qu;
+//     // CloudServer1();
+//     // CloudServer2();
+//     Do.QU_key_publickey = Qu.QU_key.publickey;
+//     Do.encrypt_QUpubkey();
+//     Qu.ciphertxt_Phi = Do.ciphertxt_Phi;
+//     Qu.decrypt_Phi();
+//     for(auto x:Qu.phi_dec) {
+//         cout<<x<<"\n";
+//     }
+//     return 0;
 // }   

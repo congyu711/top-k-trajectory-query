@@ -121,12 +121,19 @@ class GreeterServiceImpl final : public DOQU_Greeter::Service {
     // reply->add_parameter("1919810\n");
     // reply->add_parameter("Ahhhhh!!!!!\n");
     DO.QU_key_publickey = Integer(request->publickey().c_str());
-    cout<<request->publickey()<<"\n";
+    std::cout<<"publickey"<<"\n";
     DO.encrypt_QUpubkey();
+    std::cout << "Encrypt" <<"\n";
+    // std::cout<<DO.ciphertxt_Phi[0]<<"\n";
+    // printstring(DO.ciphertxt_Phi[0]);
     for(auto x:DO.ciphertxt_Phi) {
       reply->add_parameter(x);
+      // std::cout<<x<<"\n";
+      // printstring(x);
     }
+    std::cout << "reply" <<"\n";
     reply->set_conversionkey(Integer_to_string(DO.conversion_key.second));
+    DO.ciphertxt_Phi.clear();
     return Status::OK;  
   }
 };
@@ -187,8 +194,8 @@ int main(int argc, char** argv) {
   // } else {
   //   target_str = "localhost:50052";
   // }
-  seedMsgTOCS1();
-  seedMsgTOCS2();
+  // seedMsgTOCS1();
+  // seedMsgTOCS2();
   RunServer();
   return 0;
 }

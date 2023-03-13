@@ -69,9 +69,11 @@ class QUCS1Client {
 
         if(status.ok()) {
             QU.cap = Capsule(Integer(reply.cap().e().c_str()),Integer(reply.cap().v().c_str()),Integer(reply.cap().s().c_str()));
+            vector<string> tmp;
             for(auto x:reply.kid()) {
-                QU.kid.push_back(x);
+                tmp.push_back(x);
             }
+            QU.kid = tmp;
             return "OK";
         }
         else {
@@ -96,26 +98,30 @@ class GreeterClient {
     // Data we are sending to the server.
     PublicKeyRequest request;
     request.set_publickey(publicKey);
-
+    std::cout <<"publicKey"<<"\n";
     // Container for the data we expect from the server.
     ParameterReply reply;
 
     // Context for the client. It could be used to convey extra information to
     // the server and/or tweak certain RPC behaviors.
     ClientContext context;
-
+    
     // The actual RPC.
     Status status = stub_->PublicKey(&context, request, &reply);
 
     // Act upon its status.
     if (status.ok()) {
         // std::string str=reply.SerializeAsString();
-        auto parasize=reply.parameter_size();
+        auto parasize = reply.parameter_size();
+        vector<std::string> tmp;
         for(int i=0;i<parasize;i++)
         {
-            QU.ciphertxt_Phi.push_back(reply.parameter(i));
+            tmp.push_back(reply.parameter(i));
         }
+        QU.ciphertxt_Phi = tmp;
+        std::cout<<"accept"<<"\n";
         QU.decrypt_Phi();
+        std::cout<<"decrypt"<<"\n";
         QU.conversion_key = Integer(reply.conversionkey().c_str());
         // std::cout<<str<<'\n';
         for(auto &e:QU.phi_dec)   std::cout<<e<<'\n';
@@ -158,9 +164,10 @@ int main(int argc, char** argv) {
   } else {
     target_str = "localhost:50051";
   }
+
   GreeterClient greeter(
       grpc::CreateChannel(target_str, grpc::InsecureChannelCredentials())
-      );
+  );
   std::string QUpublicKey = Integer_to_string(QU.QU_key.publickey);
   std::string reply = greeter.PublicKey(QUpublicKey);
   std::cout << "Greeter received: " << reply << std::endl; 
@@ -171,7 +178,6 @@ int main(int argc, char** argv) {
   std::string reply1 = greeter1.PublicKey(QUpublicKey);
   std::cout << "Greeter1 received: " << reply1 << std::endl;
 
-  //QU.Encode_Query();
   QU.Encrypt_Query();
   std::string reply2 = greeter1.QUSearch(3,QU.qu_Enc);
   

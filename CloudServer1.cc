@@ -39,9 +39,11 @@ class CS1CS2_Client {
             Status status = stub_->exactQuery(&context,request,&reply);
 
             if(status.ok()) {
+                vector<std::pair<double, int>> tmp;
                 for(auto x:reply.kid()) {
-                    CS.kid.push_back(make_pair(x.dis(),x.lable()));
+                    tmp.push_back(make_pair(x.dis(),x.lable()));
                 }
+                CS.kid = tmp;
                 return "OK ";
             }
             else {
@@ -95,9 +97,11 @@ class GreeterServiceImpl final : public CS1::QUCS1_Greeter::Service{
     grpc::Status QUSearch(ServerContext* context, const CS1::QURequest* request,
                 CS1::QUReply* reply) override {
         CS.k = request->k();
+        vector<std::pair<double, std::string>> tmp;
         for(auto x:request->qu_encs()) {
-            CS.qu_Enc.push_back(make_pair(x.t(),x.hpoint()));
+            tmp.push_back(make_pair(x.t(),x.hpoint()));
         }
+        CS.qu_Enc = tmp;
         CS.Decrypt_Query();
         CS.Compute_ApproximateDistance();
         CS.firstTopK();
@@ -121,6 +125,7 @@ class GreeterServiceImpl final : public CS1::QUCS1_Greeter::Service{
         for(auto x:CS.K) {
             reply->add_d(x.first);
         }
+        CS.K.clear();
         return Status::OK;
     }
 };

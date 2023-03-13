@@ -66,12 +66,14 @@ void Phi_Dec(vector<string> cipher_txt,Proxy_ReEncryption &Pre_ReEnc,vector<stri
 
 void Elgamal_Dec(vector<pair<double,string>> &cipher_txt,Proxy_ReEncryption &Pre_ReEnc,vector<pair<double,string>> &dec_txt,Integer privatekey)
 {
+    vector<pair<double,string>> tmp1;
     for(auto a:cipher_txt)
     {   
         string tmp;
         Pre_ReEnc.ElGamal_Decryption(a.second,tmp,privatekey);
-        dec_txt.push_back(make_pair(a.first,tmp));
+        tmp1.push_back(make_pair(a.first,tmp));
     }
+    dec_txt = tmp1;
 }
 
 void database_encode(vector<vector<Point>> &trajectionList,Phi phi,vector<vector<pair<double,string>>> &encodingList)

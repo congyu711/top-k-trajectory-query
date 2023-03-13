@@ -46,22 +46,28 @@ void top_K(const int k,vector<double> &distlist,vector<pair<double,int>> &K)
 
 void compute_dist(vector<double> &distlist,vector<vector<pair<double,string>>> &encodingList,map<string,vector<string>> &dict,vector<pair<double,string>> &encoding_qu)
 {
+    vector<double> tmp;
     for(int i=0;i<encodingList.size();i++)
     {
-        distlist.push_back(DSED(encoding_qu,encodingList[i],dict));
+        tmp.push_back(DSED(encoding_qu,encodingList[i],dict));
     }
+    distlist = tmp;
 }
 
 void compute_dist1(vector<pair<Integer,double>> &distlist1,vector<pair<double,int>> &K,vector<vector<pair<double,string>>> &encondinglist_K,vector<vector<pair<double,string>>> &encodingList,map<string,vector<string>> &dict,vector<pair<double,string>> &encoding_qu)
-{
+{   
+    vector<vector<pair<double,string>>> tmp;
     for(auto x:K)
     {
-        encondinglist_K.push_back(encodingList[x.second]);
+        tmp.push_back(encodingList[x.second]);
     }
+    encondinglist_K = tmp;
+    vector<pair<Integer,double>> tmp1;
     for(int i=0;i<encondinglist_K.size();i++)
     {
-        distlist1.push_back(DSED1(encoding_qu,encondinglist_K[i],dict));
+        tmp1.push_back(DSED1(encoding_qu,encondinglist_K[i],dict));
     }
+    distlist1 = tmp1;
 }
 
 vector<Integer> compute_ESD(vector<pair<Integer,double>> &distlist1)
@@ -95,10 +101,14 @@ vector<double> compute_D(SHE &she,pair<Integer,Integer> sk,vector<double> &L,vec
 
 void trajection_and_ID(vector<vector<pair<double,string>>> &encodingList,pair<vector<string>,Capsule> &mess,vector<pair<double,int>> &K,vector<string> &kid,vector<vector<pair<double,string>>> &result_trajection,vector<pair<double,int>> &k)
 {
+    vector<std::string> tmp;
+    vector<vector<pair<double,string>>> tmp1;
     for(auto x:k)
     {
-        kid.push_back(mess.first[K[x.second].second]);
-        result_trajection.push_back(encodingList[K[x.second].second]);
+        tmp.push_back(mess.first[K[x.second].second]);
+        tmp1.push_back(encodingList[K[x.second].second]);
     }
+    kid = tmp;
+    result_trajection = tmp1;
 }
 #endif

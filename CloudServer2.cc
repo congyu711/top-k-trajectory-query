@@ -20,17 +20,22 @@ class GreeterServiceImpl final: public CS1_CS2::CS1CS2_Greeter::Service {
     Status exactQuery(ServerContext* context, const CS1_CS2::PreResults* request,
                 CS1_CS2::ExactResult* reply) override {
         CS2.k = request->k();
+        vector<Integer> tmp;
         for(auto x:request->esd()) {
-            CS2.ESD.push_back(Integer(x.c_str()));
+            tmp.push_back(Integer(x.c_str()));
         }
+        CS2.ESD = tmp;
+        vector<double> tmp1;
         for(auto x:request->timelist()) {
-            CS2.L.push_back(x);
+            tmp.push_back(x);
         }
+        CS2.L = tmp1;
         CS2.Topk();
         for(auto x:CS2.kid) {
             reply->add_kid()->set_dis(x.first);
             reply->add_kid()->set_lable(x.second);
         }
+        CS2.kid.clear();
         return Status::OK;
     }
 

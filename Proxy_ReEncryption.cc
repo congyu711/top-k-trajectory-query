@@ -12,6 +12,8 @@ using namespace std;
 
 typedef DL_GroupParameters_EC<ECP> GroupParameters;
 typedef DL_GroupParameters_EC<ECP>::Element Element;
+// typedef DL_GroupParameters_EC<ECP>::EllipticCurve Ec;
+// typedef DL_GroupParameters<CryptoPP::ECP::Point> Point;
 AutoSeededRandomPool prng;
 
 struct Phi
@@ -51,6 +53,10 @@ private:
     pair<Integer,Element> ECC_key_generation(Integer x);
     DL_GroupParameters_ElGamal g;
     Integer m,gen;
+    // Integer n,k;
+    // Ec ec;
+    // Point p;
+
 public:
     void ECIES_Encryption(string plain_txt,Element PublicKey,string& cipher_txt);
     void ECIES_Decryption(string cipher_txt,Integer PrivateKey,string& plain_txt);
@@ -63,9 +69,9 @@ public:
     void ElGamal_Encryption(string &plain_txt,string &cipher_txt,Integer publickey);
     void ElGamal_Decryption(string &cipher_txt,string &decryption_txt,Integer privatekey);
     Proxy_ReEncryption(){
-        g.Initialize(prng,200);
-        m = g.GetGroupOrder() + Integer::One();
-        gen = g.GetGenerator();
+        m = Integer("842876432176263314988599011300607670790928782165361660406383");
+        gen = Integer("2");
+        g.Initialize(m,gen);
     }
 };
 
@@ -105,6 +111,11 @@ void Proxy_ReEncryption::ElGamal_Decryption(string &cipher_txt,string &decryptio
 pair<Integer,Element> Proxy_ReEncryption::ECC_key_generation(Integer x){
     GroupParameters group;
     group.Initialize(ASN1::secp256r1());
+    // cout<<"k = "<<group.GetCofactor();//k
+    // group.GetCurve();//Ec
+    // cout<<"x = "<<group.GetSubgroupGenerator().x;//G.x
+    // cout<<"y = "<<group.GetSubgroupGenerator().y;//G.x
+    // cout<<"n = "<<group.GetSubgroupOrder();//n
 
     x = x % group.GetGroupOrder();
     // cout<<group.GetGroupOrder()<<"\n";

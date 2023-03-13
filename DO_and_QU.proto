@@ -14,6 +14,6 @@ message PublicKeyRequest {
 
 // DO向QU发送加密的希尔伯特曲线参数（vector<string>）
 message ParameterReply {
-  repeated string parameter = 1;
+  repeated bytes parameter = 1;
   string conversionKey = 2;
 }
