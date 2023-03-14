@@ -31,15 +31,49 @@ using CS1_CS2::SHE_pk;
 
 DataOwner DO(3,3,"/home/qinghj/top-k-trajectory-query/data.txt");
 
+class DOCS1Client1 {
+  public:
+    DOCS1Client1(std::shared_ptr<Channel> channel)
+    : stub_(QUCS1_Greeter::NewStub(channel)) {}
+
+    std::string seedConversionkey() {
+      CS1::conversion_key request;
+
+      request.set_key(Integer_to_string(DO.conversion_key.first));
+
+      for(auto x:DO.mess.first) {
+        request.mutable_encryptedid()->add_enc_val(x);
+      }
+      request.mutable_encryptedid()->mutable_very_val()->set_x1(Integer_to_string(DO.mess.second.E));
+      request.mutable_encryptedid()->mutable_very_val()->set_x2(Integer_to_string(DO.mess.second.V));
+      request.mutable_encryptedid()->mutable_very_val()->set_x3(Integer_to_string(DO.mess.second.s));
+      std::cout<<"message"<<"\n";
+      google::protobuf::Empty reply;
+      ClientContext context;
+      Status status = stub_->SeedConversionKey(&context,request,&reply);
+      if(status.ok()) {
+        return "OK ";
+      }
+      else {
+        std::cout << status.error_code() << ": " << status.error_message()
+                << std::endl;
+        return "RPC failed";
+      }
+    }
+
+  private:
+    std::unique_ptr<QUCS1_Greeter::Stub> stub_;
+};
+
 class DOCS1Client {
   public:
     DOCS1Client(std::shared_ptr<Channel> channel)
     : stub_(QUCS1_Greeter::NewStub(channel)) {}
 
-    std::string seedMessage(Integer conversionKey,maptable dict,trajectorytype trajectory,messagetype message) {
+    std::string seedMessage(maptable dict,trajectorytype trajectory) {
       msg request;
-      request.set_rk(Integer_to_string(conversionKey));
-      std::cout<<"rk = "<<conversionKey<<"\n";
+      // request.set_rk(Integer_to_string(conversionKey));
+      // std::cout<<"rk = "<<conversionKey<<"\n";
       for(auto x:dict) {
         CS1::msg_table_val tmp;
         for(auto y:x.second) {
@@ -51,21 +85,31 @@ class DOCS1Client {
       // *(request.mutable_mapping_table()) = tmp;
       std::cout<<"dict"<<"\n";
       if(DO.dict.empty()) cout<<"dict is empty"<<"\n";
+      vector<CS1::encoding> tmp3;
+      CS1::encoding tmp4;
       for(auto x:trajectory) {
+        vector<CS1::track> tmp2;
         for(auto y:x) {
-          request.add_encodinglist()->add_encoded()->set_time(y.first);
-          request.add_encodinglist()->add_encoded()->set_hil(y.second);
+          // request.add_encodinglist()->add_encoded()->set_time(y.first);
+          // request.add_encodinglist()->add_encoded()->set_hil(y.second);
+          CS1::track tmp1;
+          tmp1.set_time(y.first);
+          tmp1.set_hil(y.second);
+          tmp2.push_back(tmp1);
         }
+        tmp4.mutable_encoded()->CopyFrom({tmp2.begin(),tmp2.end()});
+        tmp3.push_back(tmp4);
       }
+      request.mutable_encodinglist()->CopyFrom({tmp3.begin(),tmp3.end()});
       std::cout<<"trajectory"<<"\n";
       if(DO.trajectionList.empty()) cout<<"dict is empty"<<"\n";
-      for(auto x:message.first) {
-        request.mutable_encryptedid()->add_enc_val(x);
-      }
-      request.mutable_encryptedid()->mutable_very_val()->set_x1(Integer_to_string(message.second.E));
-      request.mutable_encryptedid()->mutable_very_val()->set_x2(Integer_to_string(message.second.V));
-      request.mutable_encryptedid()->mutable_very_val()->set_x3(Integer_to_string(message.second.s));
-      std::cout<<"message"<<"\n";
+      // for(auto x:message.first) {
+      //   request.mutable_encryptedid()->add_enc_val(x);
+      // }
+      // request.mutable_encryptedid()->mutable_very_val()->set_x1(Integer_to_string(message.second.E));
+      // request.mutable_encryptedid()->mutable_very_val()->set_x2(Integer_to_string(message.second.V));
+      // request.mutable_encryptedid()->mutable_very_val()->set_x3(Integer_to_string(message.second.s));
+      // std::cout<<"message"<<"\n";
       ClientContext context;
 
       google::protobuf::Empty reply;
@@ -95,7 +139,7 @@ class DOCS2_Client {
       SHE_pk request;
       request.set_sk1(Integer_to_string(DO.she_sk.first));
       request.set_sk2(Integer_to_string(DO.she_sk.second));
-      std::cout<<"SHE_sk"<<DO.she_sk.first<<" "<<DO.she_sk.second<<"\n";
+      std::cout<<"SHE_sk.first = "<<DO.she_sk.first<<"\n"<<"SHE_Sk.second = "<<DO.she_sk.second<<"\n";
 
       google::protobuf::Empty reply;
 
@@ -129,6 +173,9 @@ class GreeterServiceImpl final : public DOQU_Greeter::Service {
     DO.QU_key_publickey = Integer(request->publickey().c_str());
     std::cout<<"publickey"<<"\n";
     DO.encrypt_QUpubkey();
+    DOCS1Client1 greeter(grpc::CreateChannel("localhost:50052",grpc::InsecureChannelCredentials()));
+    std::string a = greeter.seedConversionkey();
+    std::cout<< "Greeter received: "<< a <<std::endl;
     std::cout << "Encrypt" <<"\n";
     // std::cout<<DO.ciphertxt_Phi[0]<<"\n";
     // printstring(DO.ciphertxt_Phi[0]);
@@ -153,7 +200,7 @@ void seedMsgTOCS2() {
 void seedMsgTOCS1() {
   DOCS1Client greeter(grpc::CreateChannel("localhost:50052",grpc::InsecureChannelCredentials()));
   std::cout << "start seed msg"<< "\n";
-  std::string reply = greeter.seedMessage(DO.conversion_key.first,DO.dict,DO.encodingList,DO.mess);
+  std::string reply = greeter.seedMessage(DO.dict,DO.encodingList);
   std::cout << "Greeter received: " << reply << std::endl;
 }
 

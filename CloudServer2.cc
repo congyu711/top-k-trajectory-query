@@ -36,10 +36,16 @@ class GreeterServiceImpl final: public CS1_CS2::CS1CS2_Greeter::Service {
         std::cout<<"L"<<"\n";
         if(CS2.L.empty()) cout<<"L is empty"<<"\n";
         CS2.Topk();
+        vector<CS1_CS2::track_Sel> tmp3;
         for(auto x:CS2.kid) {
-            reply->add_kid()->set_dis(x.first);
-            reply->add_kid()->set_lable(x.second);
+            // reply->add_kid()->set_dis(x.first);
+            // reply->add_kid()->set_lable(x.second);
+            CS1_CS2::track_Sel tmp2;
+            tmp2.set_dis(x.first);
+            tmp2.set_lable(x.second);
+            tmp3.push_back(tmp2);
         }
+        reply->mutable_kid()->CopyFrom({tmp3.begin(),tmp3.end()});
         std::cout<<"kid"<<"\n";
         if(CS2.kid.empty()) cout<<"kid is empty"<<"\n";
         CS2.kid.clear();
@@ -49,8 +55,8 @@ class GreeterServiceImpl final: public CS1_CS2::CS1CS2_Greeter::Service {
     Status SeedMessage(ServerContext* context, const CS1_CS2::SHE_pk* request,
                         google::protobuf::Empty* reply) override {
         CS2.sk.first = Integer(request->sk1().c_str());
-        CS2.sk.first = Integer(request->sk2().c_str());
-        std::cout<<"SHE_sk"<<CS2.sk.first<<"\n"<<CS2.sk.second<<"\n";
+        CS2.sk.second = Integer(request->sk2().c_str());
+        std::cout<<"SHE_sk = "<<CS2.sk.first<<"\n"<<CS2.sk.second<<"\n";
         return Status::OK;
     }
 };

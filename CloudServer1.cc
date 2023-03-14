@@ -47,6 +47,7 @@ class CS1CS2_Client {
                 for(auto x:reply.kid()) {
                     tmp.push_back(make_pair(x.dis(),x.lable()));
                 }
+                if(tmp.empty()) cout<<"tmp is empty"<<"\n";
                 CS.kid = tmp;
                 std::cout<<"kid"<<"\n";
                 if(CS.kid.empty()) cout<<"kid is empty"<<"\n";
@@ -70,10 +71,24 @@ class GreeterServiceImpl final : public CS1::QUCS1_Greeter::Service{
         return Status::OK;
     }
 
+    grpc::Status SeedConversionKey(ServerContext* context, const CS1::conversion_key* request,
+                google::protobuf::Empty* reply) override {
+        CS.conversion_key = Integer(request->key().c_str());
+        CS.mess.second = Capsule(Integer(request->encryptedid().very_val().x1().c_str()),
+        Integer(request->encryptedid().very_val().x2().c_str()),
+        Integer(request->encryptedid().very_val().x3().c_str()));
+        for(auto x:request->encryptedid().enc_val()) {
+            CS.mess.first.push_back(x);
+        }
+        if(CS.mess.first.empty()) std::cout<< "mess"<<"\n";
+        std::cout<<"CS.conversion_key = "<<CS.conversion_key<<"\n";
+        return Status::OK;
+    }
+
     grpc::Status SeedMessage(ServerContext* context, const CS1::msg* request,
                 google::protobuf::Empty* reply) override {
-        CS.conversion_key = Integer(request->rk().c_str());
-        std::cout<<"SK = "<<CS.conversion_key<<"\n";
+        // CS.conversion_key = Integer(request->rk().c_str());
+        // std::cout<<"CS.conversion_key = "<<CS.conversion_key<<"\n";
         for(auto x:request->mapping_table()) {
             vector<string> tmp;
             for(auto y:x.second.table_content()) {
@@ -92,13 +107,13 @@ class GreeterServiceImpl final : public CS1::QUCS1_Greeter::Service{
         }
         std::cout<< "encodingList"<<"\n";
         if(CS.encodingList.empty()) cout<<"encodingList is empty"<<"\n";
-        CS.mess.second = Capsule(Integer(request->encryptedid().very_val().x1().c_str()),
-        Integer(request->encryptedid().very_val().x2().c_str()),
-        Integer(request->encryptedid().very_val().x3().c_str()));
-        for(auto x:request->encryptedid().enc_val()) {
-            CS.mess.first.push_back(x);
-        }
-        std::cout<< "mess"<<"\n";
+        // CS.mess.second = Capsule(Integer(request->encryptedid().very_val().x1().c_str()),
+        // Integer(request->encryptedid().very_val().x2().c_str()),
+        // Integer(request->encryptedid().very_val().x3().c_str()));
+        // for(auto x:request->encryptedid().enc_val()) {
+        //     CS.mess.first.push_back(x);
+        // }
+        // std::cout<< "mess"<<"\n";
         // reply->~Empty();
         return Status::OK;
     }
@@ -126,7 +141,8 @@ class GreeterServiceImpl final : public CS1::QUCS1_Greeter::Service{
         CS.Compute_ESD();
         std::cout<<"seed message to CS2"<<"\n";
         CS1CS2_Client greeter(grpc::CreateChannel("localhost:50053",grpc::InsecureChannelCredentials()));
-        greeter.exactQuery();
+        std::string reponse = greeter.exactQuery();
+        std::cout << "Greeter1 received: " << reponse << std::endl;
         CS.Encrypt_Result();
         CS.Pre_ReEncryption();
         reply->mutable_cap()->set_e(Integer_to_string(CS.cap.E));
@@ -137,12 +153,24 @@ class GreeterServiceImpl final : public CS1::QUCS1_Greeter::Service{
             reply->add_kid(x);
         }
         std::cout<<"kid"<<"\n";
+        vector<CS1::QUReply_Enc_Result> tmp3;
+        CS1::QUReply_Enc_Result tmp4;
+        if(CS.Enc_result.empty()) cout<<"Enc_result is empty"<<"\n";
         for(auto x:CS.Enc_result) {
+            vector<CS1::QURequest_qu_Enc> tmp2;
             for(auto y:x) {
-                reply->add_enc_results()->add_query_result()->set_t(y.first);
-                reply->add_enc_results()->add_query_result()->set_hpoint(y.second);
+                CS1::QURequest::qu_Enc tmp1;
+                //reply->add_enc_results()->add_query_result()->set_t(y.first);
+                // reply->add_enc_results()->add_query_result()->set_hpoint(y.second);
+                tmp1.set_t(y.first);
+                tmp1.set_hpoint(y.second);
+                tmp2.push_back(tmp1);
             }
+            tmp4.mutable_query_result()->CopyFrom({tmp2.begin(),tmp2.end()});
+            tmp3.push_back(tmp4);
         }
+        reply->mutable_enc_results()->CopyFrom({tmp3.begin(),tmp3.end()});
+        if(tmp3.empty()) cout<<"tmp3 is empty"<<"\n";
         std::cout<<"Enc_result"<<"\n";
         for(auto x:CS.K) {
             reply->add_d(x.first);

@@ -12,6 +12,13 @@ service QUCS1_Greeter {
     rpc QUSearch (QURequest) returns (QUReply) {}
 
     rpc SeedMessage (msg) returns (google.protobuf.Empty) {}
+
+    rpc SeedConversionKey (conversion_key) returns (google.protobuf.Empty) {}
+}
+
+message conversion_key {
+    string key = 1;
+    enc_id  encryptedID = 2;
 }
 
 message  track{
@@ -28,7 +35,7 @@ message Capsule{
 }
 message enc_id{
     //encrypted identity
-    repeated string enc_val =1;
+    repeated bytes enc_val =1;
     Capsule  very_val =2;
 }
 
@@ -39,8 +46,6 @@ message  msg{
     }
     map<string, table_val>  mapping_table = 1;  
     repeated  encoding  encodingList  =2;
-    string rk =3;
-    enc_id  encryptedID = 4;
 }
 
 // QU向CS1请求公钥
@@ -73,7 +78,7 @@ message QUReply {
         repeated QURequest.qu_Enc query_result = 1;
     }
     Cap cap = 2;
-    repeated string kid = 3;
+    repeated bytes kid = 3;
     repeated Enc_Result Enc_Results = 4;
     repeated double D = 5;
 }

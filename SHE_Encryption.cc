@@ -13,7 +13,7 @@ using namespace CryptoPP;
 class SHE
 {
     public:
-        SHE(int _k0=50,int _k1=16,int _k2=100):k0(_k0),k1(_k1),k2(_k2){}
+        SHE(int _k0=500,int _k1=16,int _k2=100):k0(_k0),k1(_k1),k2(_k2){}
         Integer N;
         AutoSeededRandomPool prng;
         int k0,k1,k2;
@@ -53,7 +53,7 @@ Integer SHE::Decryption(pair<Integer,Integer> sk,Integer cipher_txt){
 #ifdef __SHE_encrypt__
 int main()
 {
-    SHE a(500,16,100);
+    SHE a;
     pair<Integer,Integer> sk = a.Key_Generation();
     cout<<sk.first<<endl<<sk.second;
     Integer m("521");

@@ -106,7 +106,9 @@ void trajection_and_ID(vector<vector<pair<double,string>>> &encodingList,pair<ve
     for(auto x:k)
     {
         tmp.push_back(mess.first[K[x.second].second]);
+        cout<<1;
         tmp1.push_back(encodingList[K[x.second].second]);
+        cout<<2;
     }
     kid = tmp;
     result_trajection = tmp1;

@@ -42,15 +42,15 @@ public:
         ///////////////////////////////////////////
         read_data(fileName, trajectionList);    // TODO: use real database!!!
         ///////////////////////////////////////////
-
+        ID = {"1","2","3","4","5"};    //TODO: use the key in the database!!!
         phi_list=hilbertcurve_generator(N,r);
         vacuate(trajectionList);
         she_sk=she.Key_Generation();
+        cout<<"SHE: "<<she.k0<<" "<<she.k1<<" "<<she.k2<<endl;
         DO_key=Pre_ReEnc.ElGamal_key_generation();
         // generate mapping table
         mapping_table(trajectionList,phi_list,dict,she,she_sk);
         database_encode(trajectionList,phi_list[0],encodingList);
-        
     }
     void encrypt_QUpubkey()
     {
@@ -182,13 +182,20 @@ public:
     }
 
     void Encrypt_Result() {
+        if(encodingList.empty()) cout<<"encodingList is empty"<<"\n";
+        if(K.empty()) cout<<"K is empty"<<"\n";
+        if(kid.empty()) cout<<"kid is empty"<<"\n";
+        if(mess.first.empty()) cout<<"mess.first is empty"<<"\n";
         trajection_and_ID(encodingList,mess,K,ID_Topk,result_trajection,kid);
+        cout<<"trajection_and_ID"<<"\n";
         vector<vector<pair<double,string>>> tmp1;
+        if(result_trajection.empty()) cout<<"result_trajection is empty"<<"\n";
         for(auto a:result_trajection) {
             vector<pair<double,string>> tmp;
             Elgamal_Enc(a,Pre_ReEnc,tmp,QU_key_publicKey);
             tmp1.push_back(tmp);
         }
+        cout<<"Elgamal_Enc"<<"\n";
         Enc_result = tmp1;
     }
 
