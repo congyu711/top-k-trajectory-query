@@ -16,4 +16,5 @@ message PublicKeyRequest {
 message ParameterReply {
   repeated bytes parameter = 1;
   string conversionKey = 2;
+  string publicKey = 3;
 }

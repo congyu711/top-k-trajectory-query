@@ -90,7 +90,7 @@ class QUCS1Client {
               vector<pair<double,string>> tmp;
               for(auto y:x.query_result()) {
                 tmp.push_back(make_pair(y.t(),y.hpoint()));
-                cout<<y.t()<<" "<<y.hpoint()<<"\n";
+                // cout<<y.t()<<" "<<y.hpoint()<<"\n";
               }
               tmp1.push_back(tmp);
             }
@@ -146,6 +146,7 @@ class GreeterClient {
         QU.decrypt_Phi();
         std::cout<<"decrypt"<<"\n";
         QU.conversion_key = Integer(reply.conversionkey().c_str());
+        QU.DO_key_publickey = Integer(reply.publickey().c_str());
         // std::cout<<str<<'\n';
         for(auto &e:QU.phi_dec)   std::cout<<e<<'\n';
       return "OK";
@@ -205,7 +206,9 @@ int main(int argc, char** argv) {
   std::string reply2 = greeter1.QUSearch(3,QU.qu_Enc);
   std::cout << "Greeter1 received: " << reply2 << std::endl;
   QU.Decrypt_ID();
+  cout<<1<<'\n';
   QU.Decrypt_Result();
+  cout<<2<<'\n';
   if(QU.Enc_result.empty()) cout<<"Enc_result is empty";
   if(!QU.dec_result.empty()) {
     for(auto x:QU.dec_result) {

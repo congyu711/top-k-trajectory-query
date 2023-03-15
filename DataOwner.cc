@@ -186,6 +186,7 @@ class GreeterServiceImpl final : public DOQU_Greeter::Service {
     }
     std::cout << "reply" <<"\n";
     reply->set_conversionkey(Integer_to_string(DO.conversion_key.second));
+    reply->set_publickey(Integer_to_string(DO.DO_key.publickey));
     DO.ciphertxt_Phi.clear();
     return Status::OK;  
   }

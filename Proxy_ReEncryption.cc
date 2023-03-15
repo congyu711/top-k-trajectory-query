@@ -159,9 +159,9 @@ pair<vector<string>,Capsule> Proxy_ReEncryption::Pre_Enc(vector<string> plain_tx
     StringSource ss(hash_str,true ,new HashFilter(hash,new HexEncoder(new StringSink(digest))));
     Integer s = v + e*to_Integer(digest);
     Integer k = (a_exp_b_mod_c(B_publickey,A_privatekey,m)*v)%m;
-    // cout <<"k1: "<<k <<endl;
+    cout <<"k1: "<<k <<endl;
     pair<Integer,Element> K = ECC_key_generation(k);
-    // cout<<"K: "<<K.first<<"\n";
+    cout<<"K: "<<K.first<<"\n";
     vector<string> m_Enc;
     for(string a:plain_txt)
     {
@@ -179,7 +179,7 @@ pair<Integer,Integer> Proxy_ReEncryption::Pre_ReKeyGen(Integer A_privatekey,Inte
     string hash_str = Integer_to_string(X)+Integer_to_string(B_publickey)+Integer_to_string(a_exp_b_mod_c(B_publickey,x,m));
     string digest;
     StringSource ss(hash_str,true,new HashFilter(hash,new HexEncoder(new StringSink(digest))));
-    // cout << "d1: " << digest<<endl;
+    cout << "d1: " << digest<<endl;
     Integer d_inverse = to_Integer(digest).InverseMod(m);
     Integer rk = e*d_inverse;
     return make_pair(rk,X);
@@ -211,12 +211,14 @@ Integer Proxy_ReEncryption::Pre_ReCreateKey(Integer B_privatekey,Integer B_publi
     string digest;
     string hash_str = Integer_to_string(X)+Integer_to_string(B_publickey)+Integer_to_string(a_exp_b_mod_c(X,B_privatekey,m));
     StringSource ss(hash_str,true,new HashFilter(hash,new HexEncoder(new StringSink(digest))));
-    // cout << "d2: " <<digest<<endl;
+    cout << "d2: " <<digest<<endl;
     Integer ex = (cap.s%m-cap.E*cap.V*to_Integer(digest)%m);
-    // cout<<"v: "<<ex<<"\n";
-    // cout<<"x: "<<a_exp_b_mod_c(A_publickey,B_privatekey,m)<<"\n";
+    cout<<"v: "<<ex<<"\n";
+    cout<<"x: "<<a_exp_b_mod_c(A_publickey,B_privatekey,m)<<"\n";
+    cout<<"A_publickey = "<<A_publickey<<"\n";
+    cout<<"B_privatekey" <<B_privatekey<<"\n";
     Integer k = (a_exp_b_mod_c(A_publickey,B_privatekey,m)*ex)%m;
-    // cout<<"k2: "<< k <<endl;
+    cout<<"k2: "<< k <<endl;
     pair<Integer,Element> K = ECC_key_generation(k);
     return K.first;
 }
@@ -226,7 +228,10 @@ vector<string> Proxy_ReEncryption::Pre_Decryption(Integer privatekey,vector<stri
     for(string a:cipher_txt)
     {
         string tmp;
+        // cout<<"privatekey = "<<privatekey <<"\n";
+        printstring(a);
         ECIES_Decryption(a,privatekey,tmp);
+        // cout<<"decryption = "<<tmp<<"\n";
         m_dec.push_back(tmp);
     }
     return m_dec;

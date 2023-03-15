@@ -109,7 +109,9 @@ public:
 
     void Decrypt_ID() {
         reCreateKey = Pre_ReEnc.Pre_ReCreateKey(QU_key.privatekey,QU_key.publickey,DO_key_publickey,cap,conversion_key);
+        cout<<"reCreatekey = "<<reCreateKey<<"\n";
         txt_Dec = Pre_ReEnc.Pre_Decryption(reCreateKey,kid);
+        cout<<"重加密"<<"\n";
     }
 
     void Decrypt_Result() {
