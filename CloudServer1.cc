@@ -47,7 +47,6 @@ class CS1CS2_Client {
                 for(auto x:reply.kid()) {
                     tmp.push_back(make_pair(x.dis(),x.lable()));
                 }
-                if(tmp.empty()) cout<<"tmp is empty"<<"\n";
                 CS.kid = tmp;
                 std::cout<<"kid"<<"\n";
                 if(CS.kid.empty()) cout<<"kid is empty"<<"\n";
@@ -77,9 +76,11 @@ class GreeterServiceImpl final : public CS1::QUCS1_Greeter::Service{
         CS.mess.second = Capsule(Integer(request->encryptedid().very_val().x1().c_str()),
         Integer(request->encryptedid().very_val().x2().c_str()),
         Integer(request->encryptedid().very_val().x3().c_str()));
+        vector<string> tmp;
         for(auto x:request->encryptedid().enc_val()) {
-            CS.mess.first.push_back(x);
+            tmp.push_back(x);
         }
+        CS.mess.first = tmp;
         if(CS.mess.first.empty()) std::cout<< "mess"<<"\n";
         std::cout<<"CS.conversion_key = "<<CS.conversion_key<<"\n";
         return Status::OK;

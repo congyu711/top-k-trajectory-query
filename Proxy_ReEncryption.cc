@@ -228,7 +228,7 @@ vector<string> Proxy_ReEncryption::Pre_Decryption(Integer privatekey,vector<stri
     for(string a:cipher_txt)
     {
         string tmp;
-        // cout<<"privatekey = "<<privatekey <<"\n";
+        cout<<"privatekey = "<<privatekey <<"\n";
         printstring(a);
         ECIES_Decryption(a,privatekey,tmp);
         // cout<<"decryption = "<<tmp<<"\n";
