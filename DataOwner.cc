@@ -29,7 +29,8 @@ using CS1::msg;
 using CS1_CS2::CS1CS2_Greeter;
 using CS1_CS2::SHE_pk;
 
-DataOwner DO(3,3,"/home/qinghj/top-k-trajectory-query/data.txt");
+// TODO: use database
+DataOwner DO(3,3,"/home/congyu/Desktop/top-k-trajectory-query/data.txt");
 
 class DOCS1Client1 {
   public:

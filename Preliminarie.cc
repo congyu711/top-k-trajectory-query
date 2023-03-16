@@ -65,7 +65,7 @@ vector<Phi>  hilbertcurve_generator(uint order,int num)
 }
 
 //establish the mapping table of the trajection list
-void mapping_table(vector<vector<Point>> &trajectionList,vector<Phi> phi_list,map<string,vector<string>> &dict,SHE &she,pair<Integer,Integer> sk)
+void mapping_table(vector<vector<Point>> &trajectionList,vector<Phi> &phi_list,map<string,vector<string>> &dict,SHE &she,pair<Integer,Integer> sk)
 {
     vector<hilbertcurve> hc;
     for(int i=0;i<phi_list.size();i++)
