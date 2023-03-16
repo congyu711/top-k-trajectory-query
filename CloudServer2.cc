@@ -20,21 +20,20 @@ class GreeterServiceImpl final: public CS1_CS2::CS1CS2_Greeter::Service {
     Status exactQuery(ServerContext* context, const CS1_CS2::PreResults* request,
                 CS1_CS2::ExactResult* reply) override {
         CS2.k = request->k();
-        std::cout<<"k = "<<CS2.k<<"\n";
+        // std::cout<<"k = "<<CS2.k<<"\n";
         vector<Integer> tmp;
         for(auto x:request->esd()) {
             tmp.push_back(Integer(x.c_str()));
         }
         CS2.ESD = tmp;
-        std::cout<<"ESD"<<"\n";
-        if(CS2.ESD.empty()) cout<<"ESD is empty"<<"\n";
+        // std::cout<<"ESD"<<"\n";
+        // if(CS2.ESD.empty()) cout<<"ESD is empty"<<"\n";
         vector<double> tmp1;
         for(auto x:request->timelist()) {
             tmp1.push_back(x);
         }
         CS2.L = tmp1;
-        std::cout<<"L"<<"\n";
-        if(CS2.L.empty()) cout<<"L is empty"<<"\n";
+        // if(CS2.L.empty()) cout<<"L is empty"<<"\n";
         CS2.Topk();
         vector<CS1_CS2::track_Sel> tmp3;
         for(auto x:CS2.kid) {
@@ -46,8 +45,8 @@ class GreeterServiceImpl final: public CS1_CS2::CS1CS2_Greeter::Service {
             tmp3.push_back(tmp2);
         }
         reply->mutable_kid()->CopyFrom({tmp3.begin(),tmp3.end()});
-        std::cout<<"kid"<<"\n";
-        if(CS2.kid.empty()) cout<<"kid is empty"<<"\n";
+        // std::cout<<"kid"<<"\n";
+        // if(CS2.kid.empty()) cout<<"kid is empty"<<"\n";
         CS2.kid.clear();
         return Status::OK;
     }
@@ -56,7 +55,7 @@ class GreeterServiceImpl final: public CS1_CS2::CS1CS2_Greeter::Service {
                         google::protobuf::Empty* reply) override {
         CS2.sk.first = Integer(request->sk1().c_str());
         CS2.sk.second = Integer(request->sk2().c_str());
-        std::cout<<"SHE_sk = "<<CS2.sk.first<<"\n"<<CS2.sk.second<<"\n";
+        // std::cout<<"SHE_sk = "<<CS2.sk.first<<"\n"<<CS2.sk.second<<"\n";
         return Status::OK;
     }
 };
