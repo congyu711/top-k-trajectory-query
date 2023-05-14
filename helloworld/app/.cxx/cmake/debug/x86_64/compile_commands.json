@@ -1,0 +1,12 @@
+[
+{
+  "directory": "C:/Users/len/AndroidStudioProjects/helloworld/app/.cxx/cmake/debug/x86_64",
+  "command": "C:\\Users\\len\\AppData\\Local\\Android\\Sdk\\ndk\\23.1.7779620\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android21 --sysroot=C:/Users/len/AppData/Local/Android/Sdk/ndk/23.1.7779620/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dhilbertcurve_EXPORTS -IC:/Users/len/AndroidStudioProjects/helloworld/app/src/main/cpp/include -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fexceptions -frtti -stdlib=libc++ -g  -fno-limit-debug-info -fPIC -o CMakeFiles\\hilbertcurve.dir\\hilbertcurve.cpp.o -c C:\\Users\\len\\AndroidStudioProjects\\helloworld\\app\\src\\main\\cpp\\hilbertcurve.cpp",
+  "file": "C:\\Users\\len\\AndroidStudioProjects\\helloworld\\app\\src\\main\\cpp\\hilbertcurve.cpp"
+},
+{
+  "directory": "C:/Users/len/AndroidStudioProjects/helloworld/app/.cxx/cmake/debug/x86_64",
+  "command": "C:\\Users\\len\\AppData\\Local\\Android\\Sdk\\ndk\\23.1.7779620\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android21 --sysroot=C:/Users/len/AppData/Local/Android/Sdk/ndk/23.1.7779620/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dgrpc_app_EXPORTS -IC:/Users/len/AndroidStudioProjects/helloworld/app/src/main/cpp/include -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fexceptions -frtti -stdlib=libc++ -g  -fno-limit-debug-info -fPIC -o CMakeFiles\\grpc_app.dir\\grpc_app.cpp.o -c C:\\Users\\len\\AndroidStudioProjects\\helloworld\\app\\src\\main\\cpp\\grpc_app.cpp",
+  "file": "C:\\Users\\len\\AndroidStudioProjects\\helloworld\\app\\src\\main\\cpp\\grpc_app.cpp"
+}
+]

@@ -1,0 +1,12 @@
+# ninja log v5
+1	35	7040420423076329	CMakeFiles/helloworldexample.dir/helloworldexample.cpp.o	52d190385171e878
+36	110	7040420423835283	C:/Users/len/AndroidStudioProjects/helloworld/app/build/intermediates/cmake/debug/obj/armeabi-v7a/libhelloworldexample.so	a599226275ae84c4
+16	303	7052562070874881	build.ninja	e1a03ef299874bde
+1	7	0	clean	d6526d6452a6b1fd
+1	8	0	clean	d6526d6452a6b1fd
+0	7	0	clean	d6526d6452a6b1fd
+0	11	0	clean	d6526d6452a6b1fd
+0	11	0	clean	d6526d6452a6b1fd
+0	8	0	clean	d6526d6452a6b1fd
+1	12	0	clean	d6526d6452a6b1fd
+0	6	0	clean	d6526d6452a6b1fd

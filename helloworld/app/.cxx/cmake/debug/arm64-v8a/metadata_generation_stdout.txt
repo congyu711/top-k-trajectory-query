@@ -1,0 +1,4 @@
+-- android-19 is not supported for arm64-v8a. Using minimum supported LP64 version 21.
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Users/len/AndroidStudioProjects/helloworld/app/.cxx/cmake/debug/arm64-v8a

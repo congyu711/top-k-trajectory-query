@@ -1,0 +1,4 @@
+C:/Users/len/AndroidStudioProjects/helloworld/app/.cxx/cmake/debug/arm64-v8a/CMakeFiles/hilbertcurve.dir
+C:/Users/len/AndroidStudioProjects/helloworld/app/.cxx/cmake/debug/arm64-v8a/CMakeFiles/grpc_app.dir
+C:/Users/len/AndroidStudioProjects/helloworld/app/.cxx/cmake/debug/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/len/AndroidStudioProjects/helloworld/app/.cxx/cmake/debug/arm64-v8a/CMakeFiles/rebuild_cache.dir

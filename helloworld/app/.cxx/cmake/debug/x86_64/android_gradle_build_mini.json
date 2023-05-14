@@ -1,0 +1,30 @@
+{
+  "buildFiles": [
+    "C:\\Users\\len\\AndroidStudioProjects\\helloworld\\app\\src\\main\\cpp\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\len\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "C:\\Users\\len\\AndroidStudioProjects\\helloworld\\app\\.cxx\\cmake\\debug\\x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\len\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "C:\\Users\\len\\AndroidStudioProjects\\helloworld\\app\\.cxx\\cmake\\debug\\x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "helloworldexample::@6890427a1f51a3e7e1df": {
+      "artifactName": "helloworldexample",
+      "abi": "x86_64",
+      "output": "C:\\Users\\len\\AndroidStudioProjects\\helloworld\\app\\build\\intermediates\\cmake\\debug\\obj\\x86_64\\libhelloworldexample.so",
+      "runtimeFiles": [
+        "C:\\Users\\len\\AppData\\Local\\Android\\Sdk\\ndk\\23.1.7779620\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\x86_64-linux-android\\21\\liblog.so",
+        "C:\\Users\\len\\AndroidStudioProjects\\helloworld\\app\\.cxx\\cmake\\debug\\x86_64\\-static-libstdc++ -latomic -lm"
+      ]
+    }
+  }
+}

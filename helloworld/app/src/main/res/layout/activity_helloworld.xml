@@ -1,0 +1,73 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context=".MainActivity"
+              android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/time_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:hint="Enter time" />
+
+        <EditText
+            android:id="@+id/xLabel_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:hint="Enter xLabel"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/yLabel_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:hint="Enter yLabel"
+            android:inputType="numberDecimal" />
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="addTrajectory"
+        android:text="Add Trajectory" />
+
+    <EditText
+            android:id="@+id/ID_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter k to send" />
+
+    <Button
+            android:id="@+id/send_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="sendMessage"
+            android:text="Send Grpc Request" />
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:textSize="16sp"
+            android:text="Response:" />
+
+    <TextView
+            android:id="@+id/grpc_response_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars = "vertical"
+            android:textSize="16sp" />
+
+</LinearLayout>

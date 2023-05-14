@@ -1,0 +1,1 @@
+C:\Users\len\AndroidStudioProjects\helloworld\app\build\intermediates\cmake\debug\obj\x86_64

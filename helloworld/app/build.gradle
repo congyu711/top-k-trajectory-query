@@ -1,0 +1,78 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.protobuf'
+
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    compileSdkVersion 33
+
+    defaultConfig {
+        applicationId "io.grpc.helloworldexample"
+        minSdkVersion 19
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0"
+        externalNativeBuild {
+            cmake{
+                cppFlags ''
+                arguments "-DANDROID_TOOLCHAIN=clang","-DANDROID_STL=c++_shared"
+            }
+        }
+        ndk {
+            // Specifies the ABI configurations of your native
+            // libraries Gradle should build and package with your app.
+            abiFilters 'arm64-v8a'
+        }
+    }
+    buildTypes {
+        debug { minifyEnabled false }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        disable 'GoogleAppIndexingWarning', 'HardcodedText', 'InvalidPackage'
+        textReport true
+        textOutput "stdout"
+    }
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.22.1'
+        }
+    }
+    ndkVersion '23.1.7779620'
+}
+
+protobuf {
+    protoc { artifact = 'com.google.protobuf:protoc:3.21.7' }
+    plugins {
+        grpc { artifact = 'io.grpc:protoc-gen-grpc-java:1.54.1' // CURRENT_GRPC_VERSION
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java { option 'lite' }
+            }
+            task.plugins {
+                grpc { // Options added to --grpc_out
+                    option 'lite' }
+            }
+        }
+    }
+}
+
+dependencies {
+    //noinspection GradleCompatible
+    implementation 'com.android.support:appcompat-v7:27.0.2'
+
+    // You need to build grpc-java to obtain these libraries below.
+    implementation 'io.grpc:grpc-okhttp:1.54.1' // CURRENT_GRPC_VERSION
+    implementation 'io.grpc:grpc-protobuf-lite:1.54.1' // CURRENT_GRPC_VERSION
+    implementation 'io.grpc:grpc-stub:1.54.1' // CURRENT_GRPC_VERSION
+    implementation 'org.apache.tomcat:annotations-api:6.0.53'
+}

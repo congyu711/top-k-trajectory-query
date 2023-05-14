@@ -1,0 +1,8 @@
+Executable : C:\Users\len\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe
+arguments : 
+-C
+C:\Users\len\AndroidStudioProjects\helloworld\app\.cxx\cmake\debug\arm64-v8a
+grpc_app
+hilbertcurve
+jvmArgs : 
+
