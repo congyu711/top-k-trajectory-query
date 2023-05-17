@@ -10,8 +10,11 @@
         android:label="@string/app_name"
         android:theme="@style/Base.V7.Theme.AppCompat.Light" >
         <activity
-            android:name=".HelloworldActivity"
-            android:label="@string/app_name"
+            android:parentActivityName=".LoginActivity"
+            android:name=".SignUpActivity"/>
+        <activity android:name=".HelloworldActivity"/>
+        <activity
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
