@@ -42,7 +42,12 @@ public:
         ///////////////////////////////////////////
         read_data(fileName, trajectionList);    // TODO: use real database!!!
         ///////////////////////////////////////////
-        ID = {"1","2","3","4","5"};    //TODO: use the key in the database!!!
+        // ID = {"1","2","3","4","5"};    //TODO: use the key in the database!!!
+        ID.clear();
+        for(int i=0;i<trajectionList.size();i++)
+        {
+            ID.push_back(to_string(i+1));
+        }
         phi_list=hilbertcurve_generator(N,r);
         vacuate(trajectionList);
         she_sk=she.Key_Generation();

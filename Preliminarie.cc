@@ -72,11 +72,11 @@ void mapping_table(vector<vector<Point>> &trajectionList,vector<Phi> &phi_list,m
     {
         hc.emplace_back(phi_list[i].order,phi_list[i].origin,phi_list[i].direcion,phi_list[i].gamma);
     }
-    for(auto a:trajectionList)
+    for(int i=0;i<phi_list[0].order;i++)
     {
-        for(auto b:a)
+        for(int j=0;j<phi_list[0].order;j++)
         {
-            auto h = hc[0].xy2H[b.x][b.y];
+            auto h = hc[0].xy2H[i][j];
             // if(dict.count(h))
             // {
             //     break;
@@ -84,10 +84,10 @@ void mapping_table(vector<vector<Point>> &trajectionList,vector<Phi> &phi_list,m
             vector<string> a;
             for(int i=1;i<phi_list.size();i++)
             {
-                a.push_back(hc[i].xy2H[b.x][b.y]);
+                a.push_back(hc[i].xy2H[i][j]);
             }
-            Integer Ex = she.Encryption(b.x,sk,she.N);
-            Integer Ey = she.Encryption(b.y,sk,she.N);
+            Integer Ex = she.Encryption(i,sk,she.N);
+            Integer Ey = she.Encryption(j,sk,she.N);
             a.push_back(Integer_to_string(Ex));
             a.push_back(Integer_to_string(Ey));
             dict.insert(make_pair(h,a));

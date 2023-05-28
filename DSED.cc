@@ -27,10 +27,11 @@ int D_H(const string &a, const string &b, map<string, vector<string>> &dict)
 
 double dist(const pair<double, string> &a, const vector<pair<double, string>>& b, map<string, vector<string>> &dict)
 {
-    double tmp;
+    double tmp=1e9;
     auto p = lower_bound(b.begin(), b.end(), a, mycmp1);
     if (p != b.end())
     {
+        if(p==b.begin()) p++;
         auto q = p - 1;
         double w1 = ((*p).first - a.first) / ((*p).first - (*q).first);
         double w2 = 1 - w1;
@@ -41,10 +42,11 @@ double dist(const pair<double, string> &a, const vector<pair<double, string>>& b
 
 Integer dist1(const pair<double, string> &a, const vector<pair<double, string>>& b, map<string, vector<string>> &dict)
 {
-    Integer tmp;
+    Integer tmp=Integer("1145141919810");
     auto p = lower_bound(b.begin(), b.end(), a, mycmp1);
     if (p != b.end())
     {
+        if(p==b.begin()) p++;
         auto q = p - 1;
         Integer ay = to_Integer(dict[a.second].back());
         Integer b1y = to_Integer(dict[(*q).second].back());
