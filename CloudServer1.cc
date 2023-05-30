@@ -185,6 +185,9 @@ void RunServer() {
   grpc::EnableDefaultHealthCheckService(true);
   grpc::reflection::InitProtoReflectionServerBuilderPlugin();
   ServerBuilder builder;
+  builder.SetMaxMessageSize(0x7fffffff);
+  builder.SetMaxReceiveMessageSize(0x7fffffff);
+  builder.SetMaxSendMessageSize(0x7fffffff);
   // Listen on the given address without any authentication mechanism.
   builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
   // Register "service" as the instance through which we'll communicate with

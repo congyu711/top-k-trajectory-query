@@ -30,7 +30,7 @@ using CS1_CS2::CS1CS2_Greeter;
 using CS1_CS2::SHE_pk;
 
 // TODO: use database
-DataOwner DO(5,3,"/home/congyu/Desktop/top-k-trajectory-query/testdata.txt");
+DataOwner DO(9,3,"/home/congyu/Desktop/top-k-trajectory-query/testdata.txt");
 
 class DOCS1Client1 {
   public:
@@ -200,7 +200,10 @@ void seedMsgTOCS2() {
 }
 
 void seedMsgTOCS1() {
-  DOCS1Client greeter(grpc::CreateChannel("localhost:50052",grpc::InsecureChannelCredentials()));
+  grpc::ChannelArguments args;
+  args.SetMaxReceiveMessageSize(0x7fffffff);
+  args.SetMaxSendMessageSize(0x7fffffff);
+  DOCS1Client greeter(grpc::CreateCustomChannel("localhost:50052",grpc::InsecureChannelCredentials(),args));
   std::cout << "start seed msg"<< "\n";
   std::string reply = greeter.seedMessage(DO.dict,DO.encodingList);
   std::cout << "Greeter received: " << reply << std::endl;
