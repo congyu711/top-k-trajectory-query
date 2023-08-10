@@ -29,9 +29,16 @@ double dist(const pair<double, string> &a, const vector<pair<double, string>>& b
 {
     double tmp=1e9;
     auto p = lower_bound(b.begin(), b.end(), a, mycmp1);
-    if (p != b.end())
+    if(p==b.begin())
     {
-        if(p==b.begin()) p++;
+        tmp=D_H(a.second,b.front().second,dict);
+    }
+    else if(p==b.end())
+    {
+        tmp=D_H(a.second,b.back().second,dict);
+    }
+    else
+    {
         auto q = p - 1;
         double w1 = ((*p).first - a.first) / ((*p).first - (*q).first);
         double w2 = 1 - w1;
@@ -44,16 +51,31 @@ Integer dist1(const pair<double, string> &a, const vector<pair<double, string>>&
 {
     Integer tmp=Integer("1145141919810");
     auto p = lower_bound(b.begin(), b.end(), a, mycmp1);
-    if (p != b.end())
+    if(p==b.begin())
     {
-        if(p==b.begin()) p++;
+        Integer ay = to_Integer(dict[a.second].back());
+        Integer b2y = to_Integer(dict[b.front().second].back());
+        Integer ax = to_Integer(dict[a.second].end()[-2]);
+        Integer b2x = to_Integer(dict[b.front().second].end()[-2]);
+        tmp = (ax - b2x) * (ax - b2x) + (ay - b2y) * (ay - b2y);
+    }
+    else if(p==b.end())
+    {
+        Integer ay = to_Integer(dict[a.second].back());
+        Integer b2y = to_Integer(dict[b.back().second].back());
+        Integer ax = to_Integer(dict[a.second].end()[-2]);
+        Integer b2x = to_Integer(dict[b.back().second].end()[-2]);
+        tmp = (ax - b2x) * (ax - b2x) + (ay - b2y) * (ay - b2y);
+    }
+    else
+    {
         auto q = p - 1;
         Integer ay = to_Integer(dict[a.second].back());
         Integer b1y = to_Integer(dict[(*q).second].back());
         Integer b2y = to_Integer(dict[(*p).second].back());
-        Integer ax = to_Integer(*(dict[a.second].end() - 2));
-        Integer b1x = to_Integer(*(dict[(*q).second].end() - 2));
-        Integer b2x = to_Integer(*(dict[(*p).second].end() - 2));
+        Integer ax = to_Integer(dict[a.second].end()[-2]);
+        Integer b1x = to_Integer(dict[(*q).second].end()[-2]);
+        Integer b2x = to_Integer(dict[(*p).second].end()[-2]);
         Integer w1(((*p).first - a.first) / ((*p).first - (*q).first));
         Integer w2((a.first - (*q).first) / ((*p).first - (*q).first));
         Integer bx = w1 * b1x + w2 * b2x;

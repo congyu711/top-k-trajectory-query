@@ -30,7 +30,7 @@ using CS1_CS2::CS1CS2_Greeter;
 using CS1_CS2::SHE_pk;
 
 // TODO: use database
-DataOwner DO(9,3,"/home/congyu/Desktop/top-k-trajectory-query/testdata.txt");
+DataOwner DO(9,3,"../../testdata.txt");
 
 class DOCS1Client1 {
   public:
